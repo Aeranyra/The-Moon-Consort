@@ -7,8 +7,8 @@ import { pick } from '../../utils/helpers.js';
 import { rollRandomEvent, getRandomEventMessage } from '../../utils/randomEvent.js';
 
 export const data = new SlashCommandBuilder()
-    .setName('kiss')
-    .setDescription('Kiss someone.')
+    .setName('tease')
+    .setDescription('Tease someone.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
@@ -24,17 +24,17 @@ export async function execute(interaction) {
     const score = await getBond(sender, target, guildId);
 
     if (score < 11) {
-        const failReplies = replies.kiss.failure;
+        const failReplies = replies.tease.failure;
         return interaction.reply({ content: pick(failReplies)(sender), ephemeral: true });
     }
 
-    const newScore = await updateBond(sender, target, guildId, 3);
+    const newScore = await updateBond(sender, target, guildId, 1);
     await updateHighestBond(sender, guildId, newScore);
     await updateHighestBond(target, guildId, newScore);
 
-    await addMemory(sender, guildId, 'first_kiss', target);
+    
 
-    const replyText = pick(replies.kiss.success)(sender, target);
+    const replyText = pick(replies.tease.success)(sender, target);
     const event = rollRandomEvent();
     const eventMsg = event ? '\n' + getRandomEventMessage(event, sender) : '';
 

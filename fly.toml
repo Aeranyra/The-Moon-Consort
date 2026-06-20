@@ -7,7 +7,7 @@ primary_region = "sin"
   NODE_ENV = "production"
 
 [processes]
-  app = "node src/index.js"
+  app = "node index.js"
 
 # No [[services]] / http_service block on purpose —
 # this bot has no HTTP server and doesn't need one.

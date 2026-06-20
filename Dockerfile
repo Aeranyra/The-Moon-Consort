@@ -9,4 +9,4 @@ RUN npm install --omit=dev
 # Copy the rest of the source
 COPY . .
 
-CMD ["node", "src/index.js"]
+CMD ["node", "index.js"]

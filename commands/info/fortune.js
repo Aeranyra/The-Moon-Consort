@@ -6,7 +6,7 @@ const FORTUNES = [
     '✨ A bond you cherish will grow stronger.',
     '💞 Someone is thinking of you beneath the silver light.',
     '🌸 Give a gift today. The stars will remember.',
-    '😈 Trouble follows those who don't listen to the moon.',
+    '😈 Trouble follows those who don\'t listen to the moon.',
     '🦋 A butterfly will find you soon.',
     '💌 An unexpected message changes everything.',
     '🌑 The moon says: be patient. Good things take time.',

@@ -1,0 +1,18 @@
+app = "moon-consort"
+primary_region = "sin"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+
+[processes]
+  app = "node src/index.js"
+
+# No [[services]] / http_service block on purpose —
+# this bot has no HTTP server and doesn't need one.
+# Fly will just keep the process alive as a background worker.
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

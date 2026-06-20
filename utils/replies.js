@@ -205,7 +205,7 @@ export const replies = {
 
     challenge: {
         start: [
-            (s,t) => `👁️ ${mention(s)} and ${mention(t)} lock eyes. First to `/yield` loses.`,
+            (s,t) => `👁️ ${mention(s)} and ${mention(t)} lock eyes. First to /yield loses.`,
             (s,t) => `😈 ${mention(s)} has challenged ${mention(t)}. The moon holds its breath.`,
             (s,t) => `🌙 The tension between ${mention(s)} and ${mention(t)} is visible from space.`,
         ],

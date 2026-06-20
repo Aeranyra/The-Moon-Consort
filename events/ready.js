@@ -25,9 +25,22 @@ export async function registerCommands(client) {
     }
 
     const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-    await rest.put(
-        Routes.applicationCommands(process.env.CLIENT_ID),
-        { body: commands }
-    );
-    console.log(`✅ Registered ${commands.length} slash commands.`);
+
+    if (process.env.GUILD_ID) {
+        // Guild-scoped registration: updates appear in seconds, but only in this one server.
+        // Good for active development/testing.
+        await rest.put(
+            Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+            { body: commands }
+        );
+        console.log(`✅ Registered ${commands.length} slash commands to guild ${process.env.GUILD_ID}.`);
+    } else {
+        // Global registration: works in every server the bot is in, but can take up to
+        // an hour for brand-new commands to first appear.
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID),
+            { body: commands }
+        );
+        console.log(`✅ Registered ${commands.length} slash commands globally.`);
+    }
 }

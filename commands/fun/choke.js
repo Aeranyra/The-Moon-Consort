@@ -10,8 +10,8 @@ import { rollBackfire } from '../../utils/chaos.js';
 const BOND_THRESHOLD = 31;
 
 export const data = new SlashCommandBuilder()
-    .setName('spank')
-    .setDescription('Spank someone. Comedically.')
+    .setName('choke')
+    .setDescription('Dramatically, theatrically "choke" someone. Soap-opera style.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
@@ -21,7 +21,7 @@ export async function execute(interaction) {
 
     if (sender === target) {
         return interaction.reply({
-            embeds: [buildEmbed('fun', '🌙 That\'s between you and your own business.')],
+            embeds: [buildEmbed('fun', '🌙 You cannot dramatically choke yourself. Save the theatrics.')],
             ephemeral: true,
         });
     }
@@ -32,7 +32,7 @@ export async function execute(interaction) {
     const score = await getBond(sender, target, guildId);
     if (score < BOND_THRESHOLD) {
         return interaction.reply({
-            embeds: [buildEmbed('fun', pick(replies.spank.failure)(sender))],
+            embeds: [buildEmbed('fun', pick(replies.choke.failure)(sender))],
             ephemeral: true,
         });
     }
@@ -44,8 +44,8 @@ export async function execute(interaction) {
     await incrementField(sender, guildId, 'mischief_count');
 
     const text = backfired
-        ? pick(replies.spank.backfire)(sender, target, weapon)
-        : pick(replies.spank.success)(sender, target, weapon);
+        ? pick(replies.choke.backfire)(sender, target, weapon)
+        : pick(replies.choke.success)(sender, target, weapon);
 
     await interaction.reply({ embeds: [buildEmbed('fun', text)] });
 }

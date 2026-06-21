@@ -97,11 +97,16 @@ export const replies = {
 
     slap: {
         success: [
-            (s,t) => `👋 ${mention(s)} slapped ${mention(t)}. The moon winced.`,
-            (s,t) => `😈 ${mention(t)} felt that. So did everyone watching.`,
-            (s,t) => `✨ ${mention(s)} has no regrets. ${mention(t)} has questions.`,
-            (s,t) => `💢 ${mention(t)} will remember this.`,
-            (s,t) => `🌙 The Moon Consort pretends not to have seen ${mention(s)} do that.`,
+            (s,t,w) => `🌙 ${mention(s)} smacks ${mention(t)} with ${w}. The moon files an incident report.`,
+            (s,t,w) => `😈 ${mention(s)} unleashes ${w} on ${mention(t)}. Witnesses are stunned.`,
+            (s,t,w) => `✨ ${mention(t)} did NOT see ${w} coming from ${mention(s)}.`,
+            (s,t,w) => `💢 A slap, delivered via ${w}. ${mention(s)} has no remorse for ${mention(t)}.`,
+            (s,t,w) => `🌙 The Moon Consort gasps as ${mention(s)} slaps ${mention(t)} with ${w}. Iconic.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} swings ${w} at ${mention(t)}... and slaps themselves instead. Physics: undefeated.`,
+            (s,t,w) => `😬 ${w} ricochets off ${mention(t)} and boomerangs straight into ${mention(s)}'s face.`,
+            (s,t,w) => `✨ The moon redirects ${mention(s)}'s ${w}. ${mention(s)} is now the victim of their own crime.`,
         ],
         failure: [
             (s) => `🌸 *${mention(s)}, you can't slap a stranger. That's just assault.*`,
@@ -113,10 +118,14 @@ export const replies = {
 
     step: {
         success: [
-            (s,t) => `😈 ${mention(s)} steps on ${mention(t)}. Intentionally.`,
-            (s,t) => `🌙 The Moon Consort sighs at ${mention(s)}.`,
-            (s,t) => `✨ ${mention(t)} felt that. ${mention(s)} is unrepentant.`,
-            (s,t) => `💢 Gremlin behavior detected from ${mention(s)}.`,
+            (s,t,w) => `😈 ${mention(s)} steps on ${mention(t)} while holding ${w}. Maximum gremlin achieved.`,
+            (s,t,w) => `🌙 The Moon Consort sighs as ${mention(s)} commits a crime with ${w} nearby.`,
+            (s,t,w) => `✨ ${mention(t)} felt that. ${mention(s)} remains unrepentant, ${w} in hand.`,
+            (s,t,w) => `💢 Gremlin behavior from ${mention(s)}, witnessed by ${w}.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} trips over ${w} mid-step and faceplants in front of ${mention(t)}.`,
+            (s,t,w) => `😬 Karma redirects ${mention(s)}'s foot. ${w} was not enough to save them.`,
         ],
         failure: [
             (s) => `🌙 *${mention(s)}, even chaos requires a foundation.*`,
@@ -126,10 +135,14 @@ export const replies = {
 
     poke: {
         success: [
-            (s,t) => `👉 ${mention(s)} pokes ${mention(t)}.`,
-            (s,t) => `🌙 ${mention(t)} has been poked by ${mention(s)}.`,
-            (s,t) => `💞 Annoying, but affectionate. Classic ${mention(s)}.`,
-            (s,t) => `✨ ${mention(t)} felt that.`,
+            (s,t,w) => `👉 ${mention(s)} pokes ${mention(t)} with ${w}. Bold choice of tool.`,
+            (s,t,w) => `🌙 ${mention(t)} has been poked via ${w}, courtesy of ${mention(s)}.`,
+            (s,t,w) => `💞 Annoying, but affectionate. Classic ${mention(s)}, classic ${w}.`,
+            (s,t,w) => `✨ ${mention(t)} felt that. ${w} makes everything worse, somehow.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} pokes the air. ${mention(t)} steps aside. ${w} pokes ${mention(s)} instead, mysteriously.`,
+            (s,t,w) => `😬 ${w} has a mind of its own and jabs ${mention(s)} back.`,
         ],
     },
 
@@ -163,20 +176,19 @@ export const replies = {
 
     steal: {
         success: [
-            (s,t) => `🦋 ${mention(s)}'s hand was quick. A butterfly stolen from ${mention(t)}.`,
+            (s,t) => `🦋 ${mention(s)}'s hand was quick. A butterfly stolen from ${mention(t)}, no weapon needed — just vibes.`,
             (s,t) => `😈 ${mention(t)} didn't even notice. Yet.`,
-            (s,t) => `🌙 The moon saw ${mention(s)} do that. It said nothing.`,
+            (s,t) => `🌙 The moon saw ${mention(s)} do that. It said nothing. It's tired.`,
             (s,t) => `✨ ${mention(t)}'s collection is now one lighter. Thanks to ${mention(s)}.`,
         ],
         failRoll: [
-            (s,t) => `🦋 ${mention(s)}'s hand reached for ${mention(t)}'s butterfly... and missed.`,
-            (s,t) => `😈 Almost, ${mention(s)}. The butterfly escaped.`,
-            (s,t) => `🌙 The moon tripped ${mention(s)} at the last second.`,
-            (s,t) => `✨ Not tonight, ${mention(s)}. The stars weren't on your side.`,
+            (s,t) => `🦋 ${mention(s)}'s hand reached for ${mention(t)}'s butterfly... and grabbed a moth instead. Tragic.`,
+            (s,t) => `😈 Almost, ${mention(s)}. The butterfly filed a restraining order.`,
+            (s,t) => `🌙 The moon tripped ${mention(s)} at the last second. Petty, but effective.`,
         ],
         failEmpty: [
-            (s,t) => `🦋 ${mention(t)} has nothing to steal, ${mention(s)}.`,
-            (s,t) => `🌙 Empty hands. ${mention(t)} had no butterflies.`,
+            (s,t) => `🦋 ${mention(t)} has nothing to steal, ${mention(s)}. Embarrassing for everyone involved.`,
+            (s,t) => `🌙 Empty hands. ${mention(t)} had no butterflies. ${mention(s)} stole nothing but shame.`,
         ],
         failure: [
             (s) => `🌑 *${mention(s)}, you haven't earned enough trust to betray it yet.*`,
@@ -187,14 +199,14 @@ export const replies = {
 
     stalk: {
         success: [
-            (s,t,u) => `🌑 The moon whispers to ${mention(s)}... ${mention(t)} was last seen with ${mention(u)}.`,
-            (s,t)   => `👀 ${mention(s)} now knows more than they should about ${mention(t)}.`,
-            (s,t)   => `😈 Interesting information, ${mention(s)}. Use it carefully.`,
-            (s,t)   => `🌙 The stars spilled ${mention(t)}'s secret to ${mention(s)}.`,
+            (s,t) => `🌑 The moon whispers to ${mention(s)}... ${mention(t)} was last seen arguing with a vending machine.`,
+            (s,t) => `👀 ${mention(s)} now knows ${mention(t)} sleeps with three pillows. Use this power wisely.`,
+            (s,t) => `😈 Interesting intel, ${mention(s)}. ${mention(t)} once cried during a cereal commercial.`,
+            (s,t) => `🌙 The stars spilled ${mention(t)}'s secret to ${mention(s)}: they talk to plants. Often.`,
         ],
         noData: [
-            (s,t) => `🌙 The moon searched for ${mention(t)}'s trail, ${mention(s)}... and found nothing.`,
-            (s,t) => `👀 ${mention(t)} has been suspiciously quiet, ${mention(s)}.`,
+            (s,t) => `🌙 The moon searched for ${mention(t)}'s trail, ${mention(s)}... and found absolutely nothing. Suspicious.`,
+            (s,t) => `👀 ${mention(t)} has been suspiciously quiet, ${mention(s)}. Almost like they knew.`,
         ],
         failure: [
             (s) => `🌑 *The moon only watches those who matter, ${mention(s)}.*`,
@@ -329,6 +341,234 @@ export const replies = {
             (s) => `🌙 *${mention(s)}, you can't adopt a stranger. Build trust first.*`,
             (s) => `👶 *The moon doesn't recognize this family yet, ${mention(s)}.*`,
             (s) => `💞 *A parent-child bond needs history behind it, ${mention(s)}.*`,
+        ],
+    },
+
+    // ── LETTERS ────────────────────────────────────────────
+
+    letter: {
+        send: {
+            success: [
+                (s,t) => `💌 A sealed letter slips into the moonlight, bound for ${mention(t)}.`,
+                (s,t) => `🌙 ${mention(s)}'s words are folded into silence and sent toward ${mention(t)}.`,
+                (s,t) => `✨ The letter vanishes into shadow, carrying ${mention(s)}'s secret to ${mention(t)}.`,
+                (s,t) => `🦋 A sealed letter drifts away, unseen, toward ${mention(t)}.`,
+            ],
+            self: [
+                (s) => `🌙 *${mention(s)}, even the moon won't deliver a letter to yourself.*`,
+            ],
+        },
+        inbox: {
+            empty: [
+                (s) => `🌙 *No sealed letters await you tonight, ${mention(s)}.*`,
+                (s) => `💌 *The moon has nothing to deliver to ${mention(s)} right now.*`,
+            ],
+        },
+        burn: {
+            success: [
+                () => `🔥 The moon shall keep this secret.`,
+            ],
+            notFound: [
+                (s) => `🌙 *${mention(s)}, that letter doesn't exist, or it isn't yours to burn.*`,
+            ],
+        },
+    },
+
+    // ── NEW CHAOS COMMANDS ─────────────────────────────────
+
+    yeet: {
+        success: [
+            (s,t,w) => `🌙 ${mention(s)} yeets ${mention(t)} clean off the lunar balcony using ${w}. Gravity is a suggestion tonight.`,
+            (s,t,w) => `😈 ${mention(t)} achieves brief, unscheduled flight courtesy of ${mention(s)} and ${w}.`,
+            (s,t,w) => `✨ The stars watch ${mention(t)} sail into the void, launched by ${mention(s)} wielding ${w}.`,
+            (s,t,w) => `💢 ${mention(s)} yeets with intent. ${w} was merely an accessory to the crime.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} winds up to yeet ${mention(t)} with ${w}... and yeets themselves instead. Rookie mistake.`,
+            (s,t,w) => `😬 ${w} slips. ${mention(s)} is the one now sailing into the void.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, you need history before you launch someone into the void.*`,
+            (s) => `😈 *Earn the right to yeet, ${mention(s)}.*`,
+        ],
+    },
+
+    bonk: {
+        success: [
+            (s,t,w) => `🔨 ${mention(s)} bonks ${mention(t)} with ${w}. Go to normal jail.`,
+            (s,t,w) => `🌙 A clean bonk, courtesy of ${mention(s)} and ${w}. ${mention(t)} respects the technique.`,
+            (s,t,w) => `😈 ${mention(t)} has been bonked via ${w}. ${mention(s)} feels powerful.`,
+            (s,t,w) => `✨ The moon awards ${mention(s)} style points for bonking ${mention(t)} with ${w}.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} raises ${w} to bonk ${mention(t)}... and bonks themselves on the way up.`,
+            (s,t,w) => `😬 ${w} has had enough of ${mention(s)}'s nonsense and bonks back.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, bonk privileges require a bond first.*`,
+            (s) => `🔨 *Not yet, ${mention(s)}. The moon confiscates the bonk stick.*`,
+        ],
+    },
+
+    banish: {
+        success: [
+            (s,t,w) => `🌑 ${mention(s)} banishes ${mention(t)} to the Shadow Realm using ${w}. They'll be back in five minutes, probably.`,
+            (s,t,w) => `😈 ${mention(t)} has been temporarily yeeted into another dimension by ${mention(s)} and ${w}.`,
+            (s,t,w) => `🌙 The moon dims as ${mention(s)} casts ${mention(t)} into the void, ${w} in hand.`,
+            (s,t,w) => `✨ A dramatic banishment. ${mention(s)} really committed to the bit with ${w}.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌑 ${mention(s)} opens a portal with ${w} to banish ${mention(t)}... and falls in themselves.`,
+            (s,t,w) => `😬 The Shadow Realm rejects ${mention(t)} and takes ${mention(s)} instead. Awkward.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, banishment is a serious power. Earn it.*`,
+            (s) => `🌑 *The Shadow Realm doesn't take requests from strangers, ${mention(s)}.*`,
+        ],
+    },
+
+    // ── FUN ────────────────────────────────────────────────
+
+    choke: {
+        success: [
+            (s,t,w) => `😤 ${mention(s)} dramatically chokes ${mention(t)} with ${w}. Very telenovela of them.`,
+            (s,t,w) => `🌙 ${mention(t)} clutches their throat theatrically. ${mention(s)} takes a bow with ${w} still in hand.`,
+            (s,t,w) => `✨ Pure soap-opera energy from ${mention(s)}, ${w} included at no extra charge.`,
+            (s,t,w) => `😈 ${mention(t)} gasps SO dramatically the moon gives ${mention(s)} a standing ovation.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} reaches for ${mention(t)} with ${w} and trips over their own drama instead.`,
+            (s,t,w) => `😬 ${mention(t)} dodges. ${mention(s)} chokes on their own ambition.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, that's WAY too dramatic for a stranger.*`,
+            (s) => `😈 *Earn the theatrics, ${mention(s)}.*`,
+        ],
+    },
+
+    spank: {
+        success: [
+            (s,t,w) => `👋 ${mention(s)} spanks ${mention(t)} with ${w}. A bold, silly choice.`,
+            (s,t,w) => `🌙 ${mention(t)} yelps. ${mention(s)} grins, ${w} still swinging.`,
+            (s,t,w) => `😈 Pure chaos energy from ${mention(s)}, courtesy of ${w}.`,
+            (s,t,w) => `✨ ${mention(t)} did not consent to this ${w}-based nonsense, but here we are.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} winds up with ${w} and smacks their own hand instead. Ow.`,
+            (s,t,w) => `😬 ${w} betrays ${mention(s)} at the worst possible moment.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, that level of silliness requires a bond first.*`,
+            (s) => `😈 *Strangers don't get the ${mention(s)} treatment yet.*`,
+        ],
+    },
+
+    punish: {
+        success: [
+            (s,t,w) => `😤 ${mention(s)} sentences ${mention(t)} to the Corner of Shame, ${w} confiscated as evidence.`,
+            (s,t,w) => `🌙 The Moon Consort presides over ${mention(s)}'s punishment of ${mention(t)}. ${w} is Exhibit A.`,
+            (s,t,w) => `✨ ${mention(t)} has been formally punished. The crime: existing near ${mention(s)} and ${w}.`,
+            (s,t,w) => `😈 Justice, served by ${mention(s)}, garnished with ${w}.`,
+        ],
+        backfire: [
+            (s,t,w) => `🌙 ${mention(s)} attempts to punish ${mention(t)} with ${w}... and gets sent to the corner instead.`,
+            (s,t,w) => `😬 The gavel (${w}) backfires. ${mention(s)} is now on trial.`,
+        ],
+        failure: [
+            (s) => `🌙 *${mention(s)}, you have no authority over a stranger.*`,
+            (s) => `😈 *Earn the right to punish, ${mention(s)}.*`,
+        ],
+    },
+
+    ship: {
+        high: [
+            (a,b) => `💞 The stars are practically screaming. ${mention(a)} and ${mention(b)} are basically destiny at this point.`,
+            (a,b) => `🌙 The Moon Consort nods approvingly at ${mention(a)} and ${mention(b)}. Soulmate behavior.`,
+            (a,b) => `✨ Off the charts. ${mention(a)} and ${mention(b)} should probably just elope.`,
+        ],
+        mid: [
+            (a,b) => `🌸 There's something here between ${mention(a)} and ${mention(b)}. Not nothing, not everything.`,
+            (a,b) => `🌙 The moon shrugs. ${mention(a)} and ${mention(b)} could go either way, honestly.`,
+            (a,b) => `✨ Decent odds for ${mention(a)} and ${mention(b)}. Worth a coffee date, at least.`,
+        ],
+        low: [
+            (a,b) => `😬 The stars are... politely declining to comment on ${mention(a)} and ${mention(b)}.`,
+            (a,b) => `🌙 The moon suggests ${mention(a)} and ${mention(b)} stay friends. Just friends.`,
+            (a,b) => `✨ Compatibility: questionable. ${mention(a)} and ${mention(b)}, maybe try a different ship.`,
+        ],
+    },
+
+    eightball: {
+        answers: [
+            () => `🌙 The moon says: yes, obviously.`,
+            () => `🎱 Signs point to... absolutely not.`,
+            () => `✨ Ask again when Mercury isn't in retrograde.`,
+            () => `😈 The moon refuses to answer that one. Too spicy.`,
+            () => `🌑 Outlook hazy. Try yelling at the sky instead.`,
+            () => `💫 It is decided: yes, but you won't like it.`,
+            () => `🌸 The stars say maybe. Helpful, I know.`,
+        ],
+    },
+
+    roast: {
+        lines: [
+            (t) => `🔥 ${mention(t)}, you bring everyone so much joy... when you leave the room.`,
+            (t) => `😈 ${mention(t)} has the energy of a Wi-Fi signal with one bar.`,
+            (t) => `🌙 The moon looked at ${mention(t)} and decided to set early.`,
+            (t) => `✨ ${mention(t)} is proof that evolution can, in fact, take a break.`,
+            (t) => `💀 ${mention(t)}, the gene pool called. It wants a lifeguard.`,
+        ],
+    },
+
+    fortune: {
+        nothing: [
+            (s) => `🌙 *The moon offers only silence tonight, ${mention(s)}. Sometimes that's the message.*`,
+            (s) => `✨ *No omens today, ${mention(s)}. The stars are on break.*`,
+            (s) => `🌑 *${mention(s)}, today is simply... a day. Average. Unremarkable. Go outside.*`,
+        ],
+        butterfly: [
+            (s) => `🦋 A white butterfly drifts down to ${mention(s)}, a small gift from the moon.`,
+            (s) => `✨ Fortune smiles on ${mention(s)}. A butterfly appears, unbothered and free.`,
+        ],
+        blessing: [
+            (s) => `🌸 The moon bestows a rare blessing upon ${mention(s)} tonight.`,
+            (s) => `🌙 ${mention(s)} has been noticed by the moon itself. A blessing follows.`,
+        ],
+    },
+
+    pet: {
+        adopt: {
+            success: [
+                (s, species, name) => `🧸 ${mention(s)} adopts ${species}, naming it **${name}**. A bond begins.`,
+                (s, species, name) => `🌙 The moon presents ${mention(s)} with ${species}. They've named it **${name}**.`,
+                (s, species, name) => `✨ ${species} chose ${mention(s)} just as much as the other way around. Welcome, **${name}**.`,
+            ],
+            alreadyHave: [
+                (s) => `🌙 *${mention(s)}, you already have a companion. One moonlit pet at a time.*`,
+            ],
+        },
+        feed: {
+            success: [
+                (s, name) => `🍎 **${name}** seems happy after being fed by ${mention(s)}.`,
+                (s, name) => `🌙 **${name}** nuzzles closer to ${mention(s)}.`,
+                (s, name) => `✨ **${name}** gains affection for ${mention(s)}.`,
+            ],
+            cooldown: [
+                (s) => `🌙 *Your pet isn't hungry yet, ${mention(s)}. Give it some time.*`,
+            ],
+        },
+        play: {
+            success: [
+                (s, name) => `🦋 ${mention(s)} plays with **${name}**. Pure joy.`,
+                (s, name) => `🎁 **${name}** brings ${mention(s)} a small gift mid-play.`,
+                (s, name) => `🌸 A blessed little moment between ${mention(s)} and **${name}**.`,
+            ],
+            cooldown: [
+                (s) => `🌙 *Your pet is tired, ${mention(s)}. Let it rest a while.*`,
+            ],
+        },
+        noPet: [
+            (s) => `🌙 *${mention(s)}, you don't have a pet yet. Try \`/pet adopt\`.*`,
         ],
     },
 

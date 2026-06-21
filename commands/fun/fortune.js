@@ -1,31 +1,55 @@
-import pool from '../index.js';
+import { SlashCommandBuilder } from 'discord.js';
+import { ensureUser, incrementField } from '../../database/queries/users.js';
+import { addButterfly } from '../../database/queries/butterflies.js';
+import { getLastFortune, useFortune } from '../../database/queries/fortune.js';
+import { replies } from '../../utils/replies.js';
+import { pick } from '../../utils/helpers.js';
+import { buildEmbed } from '../../utils/embeds.js';
 
-// Safe to call on every startup — does nothing if the table already exists.
-export async function ensureFortuneTable() {
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS fortune_cooldowns (
-            user_id TEXT NOT NULL,
-            guild_id TEXT NOT NULL,
-            last_used TIMESTAMP NOT NULL,
-            PRIMARY KEY (user_id, guild_id)
-        );
-    `);
-}
+const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export async function getLastFortune(userId, guildId) {
-    const res = await pool.query(
-        'SELECT last_used FROM fortune_cooldowns WHERE user_id=$1 AND guild_id=$2',
-        [userId, guildId]
-    );
-    return res.rows[0]?.last_used ?? null;
-}
+export const data = new SlashCommandBuilder()
+    .setName('fortune')
+    .setDescription('Receive your daily moon fortune.');
 
-export async function useFortune(userId, guildId) {
-    await pool.query(
-        `INSERT INTO fortune_cooldowns (user_id, guild_id, last_used)
-         VALUES ($1, $2, NOW())
-         ON CONFLICT (user_id, guild_id)
-         DO UPDATE SET last_used = NOW()`,
-        [userId, guildId]
-    );
+export async function execute(interaction) {
+    const userId = interaction.user.id;
+    const guildId = interaction.guildId;
+    await ensureUser(userId, guildId);
+
+    const last = await getLastFortune(userId, guildId);
+    if (last) {
+        const remaining = COOLDOWN_MS - (Date.now() - new Date(last).getTime());
+        if (remaining > 0) {
+            const hours = Math.ceil(remaining / (60 * 60 * 1000));
+            return interaction.reply({
+                embeds: [buildEmbed('fortune', `🌙 *The moon has already spoken to you today. Return in ~${hours}h.*`)],
+                ephemeral: true,
+            });
+        }
+    }
+
+    await useFortune(userId, guildId);
+
+    const roll = Math.random();
+    let text, title;
+    if (roll < 0.10) {
+        // 10% — blessing
+        await incrementField(userId, guildId, 'blessings');
+        text = pick(replies.fortune.blessing)(userId);
+        title = '🌸 A Blessing';
+    } else if (roll < 0.30) {
+        // 20% — butterfly
+        await addButterfly(userId, guildId, 'white');
+        text = pick(replies.fortune.butterfly)(userId);
+        title = '🦋 A Gift';
+    } else {
+        // 70% — nothing
+        text = pick(replies.fortune.nothing)(userId);
+        title = '🌙 Your Fortune';
+    }
+
+    await interaction.reply({
+        embeds: [buildEmbed('fortune', text, { title })],
+    });
 }

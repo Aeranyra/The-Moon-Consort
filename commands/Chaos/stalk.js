@@ -4,44 +4,37 @@ import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
 import { buildEmbed } from '../../utils/embeds.js';
-
-const BOND_THRESHOLD = 11; // adjust if your original /stalk used a different value
+import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('stalk')
-    .setDescription('The moon whispers secrets about someone.')
+    .setDescription('stalk someone.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (sender === target) {
-        return interaction.reply({
-            embeds: [buildEmbed('chaos', '🌙 Stalking yourself is just called "having a mirror."')],
-            ephemeral: true,
-        });
-    }
+    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('chaos', '🌙 You cannot do this to yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
-    await ensureUser(target, guildId);
+    await ensureUser(target.id, guildId);
 
-    const score = await getBond(sender, target, guildId);
-    if (score < BOND_THRESHOLD) {
-        return interaction.reply({
-            embeds: [buildEmbed('chaos', pick(replies.stalk.failure)(sender))],
-            ephemeral: true,
-        });
+    const score = await getBond(sender, target.id, guildId);
+    const failKey = replies['stalk']?.failure;
+    const threshold = { slap:31, step:31, poke:0, yeet:31, bonk:31, banish:31, haunt:11, ignore:11, stalk:11 }['stalk'] ?? 0;
+
+    if (threshold > 0 && score < threshold) {
+        return interaction.reply({ embeds: [buildEmbed('chaos', pick(failKey)(sender))], ephemeral: true });
     }
 
-    // NOTE: simplified version. Your original /stalk likely pulled a real
-    // "last seen with" fact from database/queries/memories.js, which I didn't
-    // have access to. This version generates absurd fake "intel" instead of
-    // real interaction history. Send me memories.js and I'll wire in the real one.
-    const text = Math.random() < 0.8
-        ? pick(replies.stalk.success)(sender, target)
-        : pick(replies.stalk.noData)(sender, target);
+    const row = buildYesNoRow('stalk', sender, target.id);
+    await interaction.reply({
+        content: `<@${target.id}>`,
+        embeds: [buildEmbed('chaos', `😈 <@${sender}> wants to stalk <@${target.id}>!`)],
+        components: [row],
+    });
 
-    await interaction.reply({ embeds: [buildEmbed('chaos', text)], ephemeral: true });
+    setTimeout(async () => { try { await interaction.editReply({ components: [] }); } catch {} }, 60_000);
 }

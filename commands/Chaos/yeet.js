@@ -1,51 +1,40 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getBond, updateBond } from '../../database/queries/bonds.js';
-import { ensureUser, incrementField } from '../../database/queries/users.js';
+import { getBond } from '../../database/queries/bonds.js';
+import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
 import { buildEmbed } from '../../utils/embeds.js';
-import { randomWeapon } from '../../utils/weapons.js';
-import { rollBackfire } from '../../utils/chaos.js';
-
-const BOND_THRESHOLD = 31;
+import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('yeet')
-    .setDescription('Yeet someone into the void.')
+    .setDescription('yeet someone.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (sender === target) {
-        return interaction.reply({
-            embeds: [buildEmbed('chaos', '🌙 You cannot yeet yourself. That\'s just falling.')],
-            ephemeral: true,
-        });
-    }
+    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('chaos', '🌙 You cannot do this to yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
-    await ensureUser(target, guildId);
+    await ensureUser(target.id, guildId);
 
-    const score = await getBond(sender, target, guildId);
-    if (score < BOND_THRESHOLD) {
-        return interaction.reply({
-            embeds: [buildEmbed('chaos', pick(replies.yeet.failure)(sender))],
-            ephemeral: true,
-        });
+    const score = await getBond(sender, target.id, guildId);
+    const failKey = replies['yeet']?.failure;
+    const threshold = { slap:31, step:31, poke:0, yeet:31, bonk:31, banish:31, haunt:11, ignore:11, stalk:11 }['yeet'] ?? 0;
+
+    if (threshold > 0 && score < threshold) {
+        return interaction.reply({ embeds: [buildEmbed('chaos', pick(failKey)(sender))], ephemeral: true });
     }
 
-    const weapon = randomWeapon();
-    const backfired = rollBackfire();
+    const row = buildYesNoRow('yeet', sender, target.id);
+    await interaction.reply({
+        content: `<@${target.id}>`,
+        embeds: [buildEmbed('chaos', `😈 <@${sender}> wants to yeet <@${target.id}>!`)],
+        components: [row],
+    });
 
-    await updateBond(sender, target, guildId, -1);
-    await incrementField(sender, guildId, 'mischief_count');
-
-    const text = backfired
-        ? pick(replies.yeet.backfire)(sender, target, weapon)
-        : pick(replies.yeet.success)(sender, target, weapon);
-
-    await interaction.reply({ embeds: [buildEmbed('chaos', text)] });
+    setTimeout(async () => { try { await interaction.editReply({ components: [] }); } catch {} }, 60_000);
 }

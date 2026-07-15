@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getBond, updateBond } from '../../database/queries/bonds.js';
-import { ensureUser, incrementField } from '../../database/queries/users.js';
-import { stealButterfly } from '../../database/queries/butterflies.js';
+import { getBond } from '../../database/queries/bonds.js';
+import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
 import { buildEmbed } from '../../utils/embeds.js';
+import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('steal')
@@ -13,36 +13,25 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (sender === target) {
-        return interaction.reply({ embeds: [buildEmbed('chaos', '🌙 You cannot steal from yourself.')], ephemeral: true });
-    }
+    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('chaos', '🌙 You cannot steal from yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
-    await ensureUser(target, guildId);
+    await ensureUser(target.id, guildId);
 
-    const score = await getBond(sender, target, guildId);
+    const score = await getBond(sender, target.id, guildId);
     if (score < 61) {
         return interaction.reply({ embeds: [buildEmbed('chaos', pick(replies.steal.failure)(sender))], ephemeral: true });
     }
 
-    // fromId=target (victim loses), toId=sender (thief gains) — matches your original call order
-    const result = await stealButterfly(target, sender, guildId);
+    const row = buildYesNoRow('steal', sender, target.id);
+    await interaction.reply({
+        content: `<@${target.id}>`,
+        embeds: [buildEmbed('chaos', `🦋 <@${sender}> is eyeing <@${target.id}>'s butterflies... do you dare let them try?`)],
+        components: [row],
+    });
 
-    if (result.empty) {
-        return interaction.reply({ embeds: [buildEmbed('chaos', pick(replies.steal.failEmpty)(sender, target))] });
-    }
-
-    if (!result.success) {
-        await updateBond(sender, target, guildId, -3);
-        await incrementField(sender, guildId, 'mischief_count');
-        return interaction.reply({ embeds: [buildEmbed('chaos', pick(replies.steal.failRoll)(sender, target))] });
-    }
-
-    await updateBond(sender, target, guildId, -3);
-    await incrementField(sender, guildId, 'mischief_count');
-
-    await interaction.reply({ embeds: [buildEmbed('chaos', pick(replies.steal.success)(sender, target))] });
+    setTimeout(async () => { try { await interaction.editReply({ components: [] }); } catch {} }, 60_000);
 }

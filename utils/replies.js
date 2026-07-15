@@ -572,4 +572,15 @@ export const replies = {
         ],
     },
 
+
+    // ── BUTTON RESPONSES ────────────────────────────────────
+    button: {
+        decline: [
+            (s,t) => `🌙 ${mention(t)} steps back gently. Perhaps another time, ${mention(s)}.`,
+            (s,t) => `✨ ${mention(t)} lets the moment pass. The moon understands.`,
+            (s,t) => `🌸 Not tonight. ${mention(t)} has spoken.`,
+            (s,t) => `😶 ${mention(s)} is left standing alone. The stars look away politely.`,
+        ],
+    },
+
 };

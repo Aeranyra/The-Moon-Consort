@@ -583,4 +583,117 @@ export const replies = {
         ],
     },
 
+
+    // ── BUTTON PROMPTS (shown before target accepts/declines) ────
+    prompts: {
+        kiss:    [(s,t) => `💋 <@${s}> leans in toward <@${t}>... the moon holds its breath.`,
+                  (s,t) => `🌙 <@${s}> wants to kiss <@${t}>. Will they allow it?`,
+                  (s,t) => `✨ <@${s}> reaches for <@${t}>'s cheek. The stars await.`],
+        hug:     [(s,t) => `🤗 <@${s}> opens their arms toward <@${t}>. Do you step in?`,
+                  (s,t) => `🌙 <@${s}> would like to hug <@${t}>. The moon watches warmly.`],
+        cuddle:  [(s,t) => `🧸 <@${s}> wants to cuddle up with <@${t}>. Will you let them?`,
+                  (s,t) => `🌙 <@${s}> edges closer to <@${t}>. Your move.`],
+        snuggle: [(s,t) => `🥰 <@${s}> wants to snuggle <@${t}>. Do you allow it?`,
+                  (s,t) => `🌙 <@${s}> has chosen <@${t}> as their snuggle target.`],
+        pat:     [(s,t) => `🐾 <@${s}> raises a hand toward <@${t}>'s head. Pat incoming.`,
+                  (s,t) => `✨ <@${s}> wants to pat <@${t}>. Do you accept?`],
+        comfort: [(s,t) => `🌸 <@${s}> reaches out to comfort <@${t}>. Will you let them?`,
+                  (s,t) => `💞 <@${s}> wants to be there for <@${t}>. Do you accept?`],
+        tease:   [(s,t) => `😏 <@${s}> has that look. <@${t}>, you're the target.`,
+                  (s,t) => `😈 <@${s}> is about to tease <@${t}>. Brace yourself.`],
+        slap:    [(s,t) => `👋 <@${s}> is winding up to slap <@${t}>. Dare you stand there?`,
+                  (s,t) => `😈 <@${s}> has chosen violence. <@${t}>, you've been warned.`],
+        step:    [(s,t) => `🦶 <@${s}> is about to step on <@${t}>. Intentionally.`,
+                  (s,t) => `😈 <@${s}> eyes <@${t}>'s foot. This is going to happen.`],
+        poke:    [(s,t) => `👉 <@${s}> extends a finger toward <@${t}>. You feel it coming.`,
+                  (s,t) => `🌙 <@${s}> is going to poke <@${t}>. Resistance is futile.`],
+        yeet:    [(s,t) => `🌙 <@${s}> is preparing to yeet <@${t}> into the void.`,
+                  (s,t) => `😈 <@${s}> has acquired a launch trajectory for <@${t}>.`],
+        bonk:    [(s,t) => `🔨 <@${s}> raises something at <@${t}>. A bonk is imminent.`,
+                  (s,t) => `😈 <@${s}> has selected <@${t}> for bonking.`],
+        banish:  [(s,t) => `🌑 <@${s}> is opening a portal. <@${t}>, pack your bags.`,
+                  (s,t) => `😈 <@${s}> points at <@${t}>. The shadow realm awaits.`],
+        haunt:   [(s,t) => `👻 <@${s}> has chosen to haunt <@${t}> from the shadows.`,
+                  (s,t) => `🌙 <@${s}> fades into the dark near <@${t}>.`],
+        ignore:  [(s,t) => `😶 <@${s}> is about to very deliberately not look at <@${t}>.`,
+                  (s,t) => `🌙 <@${s}> turns away from <@${t}>. Cold.`],
+        stalk:   [(s,t) => `👀 <@${s}> has their eyes on <@${t}>. Very closely.`,
+                  (s,t) => `🌑 <@${s}> is asking the moon about <@${t}>'s secrets.`],
+        steal:   [(s,t) => `🦋 <@${s}> eyes <@${t}>'s butterflies. The hand is already moving.`,
+                  (s,t) => `😈 <@${s}> has spotted <@${t}>'s collection. Suspicious.`],
+        choke:   [(s,t) => `😤 <@${s}> is doing their best telenovela impression at <@${t}>.`,
+                  (s,t) => `🌙 <@${s}> reaches dramatically toward <@${t}>'s throat.`],
+        spank:   [(s,t) => `👋 <@${s}> has chosen <@${t}> as today's chaos target.`,
+                  (s,t) => `😈 <@${s}> grins at <@${t}>. This is going to be silly.`],
+        punish:  [(s,t) => `😤 <@${s}> raises the gavel at <@${t}>. Court is in session.`,
+                  (s,t) => `🌙 <@${s}> sentences <@${t}> to the Corner of Shame.`],
+        drink_share: [
+            (s,t) => `🍵 <@${s}> slides a warm cup toward <@${t}>. Something moonlit and faintly glowing.`,
+            (s,t) => `🌙 <@${s}> offers <@${t}> a drink beneath the stars. Will you accept?`,
+            (s,t) => `✨ <@${s}> has prepared something for <@${t}>. It smells like nightjasmine and stardew.`,
+        ],
+        eat_share: [
+            (s,t) => `🍱 <@${s}> holds out something warm toward <@${t}>. Moon-touched and carefully made.`,
+            (s,t) => `🌙 <@${s}> wants to share a meal with <@${t}>. Something soft and silver-plated.`,
+            (s,t) => `✨ <@${s}> has food for <@${t}>. It looks suspicious in the best way.`,
+        ],
+    },
+
+
+    // ── DRINK ──────────────────────────────────────────────
+    drink: {
+        share: {
+            success: [
+                (s,t) => `🍵 <@${s}> and <@${t}> share a drink under silver light. Something warm passes between them.`,
+                (s,t) => `🌙 The Moon Consort watches <@${s}> and <@${t}> clink cups. A quiet toast to being here.`,
+                (s,t) => `✨ <@${t}> accepts the cup from <@${s}>. It tastes like moonlight and something almost remembered.`,
+                (s,t) => `🍵 A drink shared between <@${s}> and <@${t}>. The night feels warmer for it.`,
+            ],
+        },
+        force: {
+            success: [
+                (s,t) => `😈 <@${s}> shoves a mysterious vial at <@${t}>. It's bubbling. It's probably fine.`,
+                (s,t) => `🌙 <@${t}> didn't agree to this. <@${s}> didn't ask. The potion is already halfway down.`,
+                (s,t) => `✨ <@${s}> force-feeds <@${t}> something that glows faintly purple. Medical advice not included.`,
+                (s,t) => `😬 The liquid <@${s}> poured into <@${t}> smelled like regret and tasted worse. They'll be fine. Probably.`,
+            ],
+            backfire: [
+                (s,t) => `🌙 <@${s}> goes to force a drink on <@${t}> and inhales the fumes instead. Classic.`,
+                (s,t) => `😬 The suspicious potion slips and <@${s}> drinks the whole thing themselves. <@${t}> watches in horror.`,
+            ],
+            failure: [
+                (s) => `🌙 *<@${s}>, you cannot force-feed a stranger. Build the bond first.*`,
+                (s) => `😈 *The moon confiscates the potion from <@${s}>. Not yet.*`,
+            ],
+        },
+    },
+
+    // ── EAT ────────────────────────────────────────────────
+    eat: {
+        share: {
+            success: [
+                (s,t) => `🍱 <@${s}> and <@${t}> share a quiet meal. The food is moon-touched and inexplicably perfect.`,
+                (s,t) => `🌙 Something about eating together with <@${s}> and <@${t}> makes the night feel like it matters.`,
+                (s,t) => `✨ <@${t}> accepts food from <@${s}>. It tastes like somewhere safe.`,
+                (s,t) => `🍱 <@${s}> and <@${t}> eat in comfortable silence. The Moon Consort approves of this.`,
+            ],
+        },
+        force: {
+            success: [
+                (s,t) => `😈 <@${s}> shoves something unidentified into <@${t}>'s mouth. It's moving slightly. Bon appétit.`,
+                (s,t) => `🌙 <@${t}> didn't open their mouth willingly. <@${s}> was not deterred. The moon sighs.`,
+                (s,t) => `😬 <@${s}> force-feeds <@${t}> a moonherb dumpling that was definitely not inspected.`,
+                (s,t) => `✨ Whatever <@${s}> fed <@${t}>, it glowed. That is not necessarily a good sign.`,
+            ],
+            backfire: [
+                (s,t) => `🌙 <@${s}> trips while approaching <@${t}> and eats the questionable food themselves. Karma.`,
+                (s,t) => `😬 <@${t}> ducks. <@${s}> gets a face full of their own suspicious cooking.`,
+            ],
+            failure: [
+                (s) => `🌙 *<@${s}>, you cannot force-feed a stranger. That requires trust — or at least familiarity.*`,
+                (s) => `😈 *Build a bond before you weaponize food, <@${s}>.*`,
+            ],
+        },
+    },
+
 };

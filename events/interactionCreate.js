@@ -34,6 +34,8 @@ const BUTTON_COMMANDS = {
     stalk:   { threshold: 11,  delta: 0,  category: 'chaos',     memory: null,            chaos: false },
     steal:   { threshold: 61,  delta: -3, category: 'chaos',     memory: null,            chaos: true,  mischief: 'mischief_count' },
     choke:   { threshold: 31,  delta: -1, category: 'fun',       memory: null,            chaos: true,  mischief: 'mischief_count' },
+    drink_share: { threshold: 0, delta: 2,  category: 'affection', memory: null,            chaos: false },
+    eat_share:   { threshold: 0, delta: 2,  category: 'affection', memory: null,            chaos: false },
     spank:   { threshold: 31,  delta: -1, category: 'fun',       memory: null,            chaos: true,  mischief: 'mischief_count' },
     punish:  { threshold: 31,  delta: -1, category: 'fun',       memory: null,            chaos: true,  mischief: 'mischief_count' },
 };

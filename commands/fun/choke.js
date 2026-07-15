@@ -1,51 +1,37 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getBond, updateBond } from '../../database/queries/bonds.js';
-import { ensureUser, incrementField } from '../../database/queries/users.js';
+import { getBond } from '../../database/queries/bonds.js';
+import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
 import { buildEmbed } from '../../utils/embeds.js';
-import { randomWeapon } from '../../utils/weapons.js';
-import { rollBackfire } from '../../utils/chaos.js';
-
-const BOND_THRESHOLD = 31;
+import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('choke')
-    .setDescription('Dramatically, theatrically "choke" someone. Soap-opera style.')
+    .setDescription('choke someone.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (sender === target) {
-        return interaction.reply({
-            embeds: [buildEmbed('fun', '🌙 You cannot dramatically choke yourself. Save the theatrics.')],
-            ephemeral: true,
-        });
-    }
+    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('fun', '🌙 You cannot do this to yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
-    await ensureUser(target, guildId);
+    await ensureUser(target.id, guildId);
 
-    const score = await getBond(sender, target, guildId);
-    if (score < BOND_THRESHOLD) {
-        return interaction.reply({
-            embeds: [buildEmbed('fun', pick(replies.choke.failure)(sender))],
-            ephemeral: true,
-        });
+    const score = await getBond(sender, target.id, guildId);
+    if (score < 31) {
+        return interaction.reply({ embeds: [buildEmbed('fun', pick(replies['choke'].failure)(sender))], ephemeral: true });
     }
 
-    const weapon = randomWeapon();
-    const backfired = rollBackfire();
+    const row = buildYesNoRow('choke', sender, target.id);
+    await interaction.reply({
+        content: `<@${target.id}>`,
+        embeds: [buildEmbed('fun', `😈 <@${sender}> wants to choke <@${target.id}>!`)],
+        components: [row],
+    });
 
-    await updateBond(sender, target, guildId, -1);
-    await incrementField(sender, guildId, 'mischief_count');
-
-    const text = backfired
-        ? pick(replies.choke.backfire)(sender, target, weapon)
-        : pick(replies.choke.success)(sender, target, weapon);
-
-    await interaction.reply({ embeds: [buildEmbed('fun', text)] });
+    setTimeout(async () => { try { await interaction.editReply({ components: [] }); } catch {} }, 60_000);
 }

@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getBond, updateBond } from '../../database/queries/bonds.js';
-import { ensureUser, updateHighestBond } from '../../database/queries/users.js';
-import { addMemory } from '../../database/queries/memories.js';
+import { getBond } from '../../database/queries/bonds.js';
+import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
-import { rollRandomEvent, getRandomEventMessage } from '../../utils/randomEvent.js';
+import { buildEmbed } from '../../utils/embeds.js';
+import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('kiss')
@@ -13,30 +13,36 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (sender === target) return interaction.reply({ content: '🌙 You cannot do this to yourself.', ephemeral: true });
+    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('affection', '🌙 You cannot do this to yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
-    await ensureUser(target, guildId);
+    await ensureUser(target.id, guildId);
 
-    const score = await getBond(sender, target, guildId);
-
+    const score = await getBond(sender, target.id, guildId);
     if (score < 11) {
-        const failReplies = replies.kiss.failure;
-        return interaction.reply({ content: pick(failReplies)(sender), ephemeral: true });
+        return interaction.reply({ embeds: [buildEmbed('affection', pick(replies.kiss.failure)(sender))], ephemeral: true });
     }
 
-    const newScore = await updateBond(sender, target, guildId, 3);
-    await updateHighestBond(sender, guildId, newScore);
-    await updateHighestBond(target, guildId, newScore);
+    const row = buildYesNoRow('kiss', sender, target.id);
+    await interaction.reply({
+        content: `<@${target.id}>`,
+        embeds: [buildEmbed('affection', `💋 ${pick([
+            `🌙 ${mention(sender)} leans in toward ${mention(target.id)}... the moon holds its breath.`,
+            `💋 ${mention(sender)} wants to kiss ${mention(target.id)}. Will they allow it?`,
+            `✨ ${mention(sender)} reaches for ${mention(target.id)}'s cheek. The stars await the answer.`,
+        ])()} `, { title: '💋 A Kiss?' })],
+        components: [row],
+    });
 
-    await addMemory(sender, guildId, 'first_kiss', target);
-
-    const replyText = pick(replies.kiss.success)(sender, target);
-    const event = rollRandomEvent();
-    const eventMsg = event ? '\n' + getRandomEventMessage(event, sender) : '';
-
-    await interaction.reply({ content: replyText + eventMsg });
+    // Auto-disable buttons after 60 seconds
+    setTimeout(async () => {
+        try {
+            await interaction.editReply({ components: [] });
+        } catch {}
+    }, 60_000);
 }
+
+function mention(id) { return `<@${id}>`; }

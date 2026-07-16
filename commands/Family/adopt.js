@@ -5,6 +5,7 @@ import { addMemory } from '../../database/queries/memories.js';
 import pool from '../../database/index.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
+import { buildEmbed } from '../../utils/embeds.js';
 
 export const data = new SlashCommandBuilder()
     .setName('adopt')
@@ -16,29 +17,18 @@ export async function execute(interaction) {
     const target = interaction.options.getUser('user').id;
     const guildId = interaction.guildId;
 
-    if (sender === target) return interaction.reply({ content: '🌙 You cannot adopt yourself.', ephemeral: true });
+    if (sender === target) return interaction.reply({ embeds: [buildEmbed('family', '🌙 You cannot adopt yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
     await ensureUser(target, guildId);
 
     const score = await getBond(sender, target, guildId);
-    if (score < 61) {
-        return interaction.reply({ content: pick(replies.adopt.failure)(sender), ephemeral: true });
-    }
+    if (score < 61) return interaction.reply({ embeds: [buildEmbed('family', pick(replies.adopt.failure)(sender))], ephemeral: true });
 
-    const existing = await pool.query(
-        'SELECT * FROM family WHERE parent_id=$1 AND child_id=$2 AND guild_id=$3',
-        [sender, target, guildId]
-    );
-    if (existing.rows.length) {
-        return interaction.reply({ content: '🌙 You have already adopted this person.', ephemeral: true });
-    }
+    const existing = await pool.query('SELECT * FROM family WHERE parent_id=$1 AND child_id=$2 AND guild_id=$3', [sender, target, guildId]);
+    if (existing.rows.length) return interaction.reply({ embeds: [buildEmbed('family', '🌙 You have already adopted this person.')], ephemeral: true });
 
-    await pool.query(
-        'INSERT INTO family (parent_id, child_id, guild_id) VALUES ($1, $2, $3)',
-        [sender, target, guildId]
-    );
+    await pool.query('INSERT INTO family (parent_id, child_id, guild_id) VALUES ($1, $2, $3)', [sender, target, guildId]);
     await addMemory(sender, guildId, 'first_child', target);
-
-    await interaction.reply({ content: pick(replies.adopt.success)(sender, target) });
+    await interaction.reply({ embeds: [buildEmbed('family', pick(replies.adopt.success)(sender, target))] });
 }

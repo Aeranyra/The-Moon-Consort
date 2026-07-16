@@ -696,4 +696,110 @@ export const replies = {
         },
     },
 
+
+    // ── SEDUCE ─────────────────────────────────────────────
+    seduce: {
+        prompts: [
+            (s,t) => `💋 <@${s}> turns the full force of their attention toward <@${t}>. The moon dims slightly.`,
+            (s,t) => `🌙 <@${s}> has chosen <@${t}> as tonight's target. Dangerously.`,
+            (s,t) => `✨ <@${s}> leans in toward <@${t}> with entirely too much confidence.`,
+            (s,t) => `😈 Something about <@${s}>'s expression makes <@${t}> nervous. In a specific way.`,
+        ],
+        success: [
+            (s,t) => `💞 <@${t}> didn't stand a chance. <@${s}> is simply built different.`,
+            (s,t) => `🌙 The Moon Consort watches <@${s}> succeed with quiet, knowing amusement.`,
+            (s,t) => `✨ <@${t}> folds completely. <@${s}> accepts this as their due.`,
+            (s,t) => `😈 <@${s}> didn't even try that hard. <@${t}> is simply weak to this.`,
+            (s,t) => `💋 The air in the room changes. <@${t}> notices. <@${s}> knew they would.`,
+        ],
+        failure: [
+            (s,t) => `🌙 <@${t}> raises an eyebrow at <@${s}>. One eyebrow. That's all they get.`,
+            (s,t) => `😶 <@${t}> looks <@${s}> up and down and simply walks away.`,
+            (s,t) => `✨ The stars tried to warn <@${s}>. They did not listen.`,
+            (s,t) => `💔 <@${s}>'s attempt lands with all the grace of a wet sock. <@${t}> is unmoved.`,
+        ],
+    },
+
+    // ── SLEEP ──────────────────────────────────────────────
+    sleep: {
+        prompts: [
+            (s,t) => `🌙 <@${s}> holds out a blanket toward <@${t}>. It's time to rest.`,
+            (s,t) => `✨ <@${s}> wants to tuck <@${t}> in tonight. The moon approves.`,
+            (s,t) => `🌸 <@${s}> appears with something warm and soft for <@${t}>. Sleep?`,
+        ],
+        success: [
+            (s,t) => `🌙 <@${s}> tucks <@${t}> in gently. The moon dims to a hush.`,
+            (s,t) => `✨ <@${t}> is settled. <@${s}> stays a moment longer than necessary.`,
+            (s,t) => `🌸 A blanket, a quiet room, and <@${s}>'s presence. <@${t}> drifts off.`,
+            (s,t) => `💞 <@${s}> watches over <@${t}> until sleep finds them. The stars keep watch too.`,
+            (s,t) => `🌙 Good night, <@${t}>. <@${s}> made sure of it.`,
+        ],
+    },
+
+    // ── DARE ───────────────────────────────────────────────
+    dare: {
+        dares: [
+            (t) => `😈 <@${t}> must compliment the last person who annoyed them. Out loud.`,
+            (t) => `🌙 <@${t}> must speak exclusively in questions for the next 5 minutes.`,
+            (t) => `✨ <@${t}> must confess their most unhinged opinion about a fictional character.`,
+            (t) => `😈 <@${t}> must describe their current vibe as a weather report.`,
+            (t) => `🌙 <@${t}> must send a voice message saying "I am the moon" with full commitment.`,
+            (t) => `✨ <@${t}> must rate everyone they've interacted with today out of 10. No context.`,
+            (t) => `😈 <@${t}> must tell the chat something they've never admitted before. It can be small. It must be true.`,
+            (t) => `🌙 <@${t}> must write a one-sentence review of their own personality.`,
+            (t) => `✨ <@${t}> must choose: fight one moon-sized duck, or one hundred duck-sized moons.`,
+            (t) => `😈 <@${t}> must describe their sleep schedule as if it were a crime scene.`,
+            (t) => `🌙 <@${t}> must assign everyone currently online a moon phase. No explanations.`,
+            (t) => `✨ <@${t}> must explain what they would do if they woke up as the Moon Consort for a day.`,
+        ],
+    },
+
+    // ── DAILY ──────────────────────────────────────────────
+    daily: {
+        butterfly: [
+            (s) => `🦋 The moon left something at your door, <@${s}>. A white butterfly, unclaimed.`,
+            (s) => `✨ <@${s}> checked in and the moon noticed. A butterfly drifts over.`,
+        ],
+        blessing: [
+            (s) => `🌸 The moon bestows a quiet blessing on <@${s}> today.`,
+            (s) => `✨ Something soft settles around <@${s}>. A blessing, given freely.`,
+        ],
+        nothing: [
+            (s) => `🌙 The moon sees you, <@${s}>. Today it offers only presence. That's enough.`,
+            (s) => `✨ <@${s}> checked in. The stars noted it. The night continues.`,
+            (s) => `🌑 Nothing today, <@${s}>. But the moon remembers you came.`,
+        ],
+        cooldown: [
+            (s) => `🌙 *<@${s}>, you've already checked in today. The moon will see you again tomorrow.*`,
+        ],
+    },
+
+    // ── TAROT ──────────────────────────────────────────────
+    tarot: {
+        cards: [
+            { name: '0 — The Fool', emoji: '🌟', text: 'A beginning. Unearned confidence and absolute potential. The moon says: step off the edge. The ground may or may not be there. That\'s the point.' },
+            { name: 'I — The Magician', emoji: '✨', text: 'Everything you need is already in your hands. The moon says: stop waiting for permission to begin.' },
+            { name: 'II — The High Priestess', emoji: '🌙', text: 'The answer exists. You already know it. The moon says: sit with the silence until you remember.' },
+            { name: 'III — The Empress', emoji: '🌸', text: 'Something is growing. Slowly, surely, without your interference. The moon says: tend it gently.' },
+            { name: 'IV — The Emperor', emoji: '👑', text: 'Structure. Order. The shape a life takes when someone decides to take it seriously. The moon says: build something that lasts.' },
+            { name: 'V — The Hierophant', emoji: '📜', text: 'Tradition speaks. Whether you listen is up to you. The moon says: know the rules before you decide which ones to break.' },
+            { name: 'VI — The Lovers', emoji: '💞', text: 'A choice presented as a feeling. The moon says: the heart already knows. The mind is just stalling.' },
+            { name: 'VII — The Chariot', emoji: '🔥', text: 'Forward. No matter what. The moon says: the direction is right even if the road is rough.' },
+            { name: 'VIII — Strength', emoji: '🦁', text: 'Not force. Something quieter. The moon says: the hardest thing you\'ll ever hold is yourself, gently.' },
+            { name: 'IX — The Hermit', emoji: '🕯️', text: 'Solitude with purpose. The moon says: find the lantern inside yourself before you try to light the way for others.' },
+            { name: 'X — Wheel of Fortune', emoji: '🌀', text: 'Things change. They always have. The moon says: learn to move with the turning rather than clinging to any one point on the wheel.' },
+            { name: 'XI — Justice', emoji: '⚖️', text: 'What is owed will be settled. The moon says: the accounting is already underway, whether or not you can see it.' },
+            { name: 'XII — The Hanged Man', emoji: '🌑', text: 'Stillness chosen willingly. The moon says: sometimes surrender is the only way through.' },
+            { name: 'XIII — Death', emoji: '🍂', text: 'An ending that makes room. The moon says: let the thing that is already over be over.' },
+            { name: 'XIV — Temperance', emoji: '🌊', text: 'Balance. Flow. The space between too much and not enough. The moon says: you already know which way you\'re tilting.' },
+            { name: 'XV — The Devil', emoji: '😈', text: 'The chain you\'re wearing is one you put on yourself. The moon says: the clasp is right there. You can take it off whenever you decide to.' },
+            { name: 'XVI — The Tower', emoji: '⚡', text: 'Something falls. It was going to fall anyway. The moon says: what couldn\'t hold you up was never a foundation.' },
+            { name: 'XVII — The Star', emoji: '⭐', text: 'After everything — hope. Quiet, persistent, unreasonable hope. The moon says: this one is not a question.' },
+            { name: 'XVIII — The Moon', emoji: '🌕', text: 'Illusion. Instinct. The way things look at 3am. The moon says: not everything in the dark is a threat. Some of it is just the truth waiting for you to adjust your eyes.' },
+            { name: 'XIX — The Sun', emoji: '☀️', text: 'Clarity. Joy without explanation. The moon says: you are allowed to feel this without waiting for the other shoe.' },
+            { name: 'XX — Judgement', emoji: '🔔', text: 'The call has come. The moon says: you\'ve been given enough time to prepare. You are more ready than you think.' },
+            { name: 'XXI — The World', emoji: '🌍', text: 'Completion. The long thing is done. The moon says: stand in it for a moment before you start the next one.' },
+        ],
+    },
+
 };

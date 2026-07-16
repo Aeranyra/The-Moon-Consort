@@ -25,7 +25,6 @@ export async function execute(interaction) {
         ephemeral: true,
     });
 
-    // Defer immediately so the interaction doesn't time out
     await interaction.deferReply({ ephemeral: true });
 
     await ensureUser(sender, guildId);
@@ -42,6 +41,7 @@ export async function execute(interaction) {
     const mood = await getDailyMood(guildId);
 
     if (mutual) {
+        // Both confessed — reveal publicly
         await markRevealed(sender, target.id, guildId);
         const newScore = await updateBond(sender, target.id, guildId, 10);
         await updateHighestBond(sender, guildId, newScore);
@@ -53,36 +53,38 @@ export async function execute(interaction) {
             .setDescription(`The moon has kept both your secrets long enough.\n\n<@${sender}> and <@${target.id}> have confessed to each other.\n\n✨ Bond +10`)
             .setFooter({ text: getMoodFooter(mood) });
 
-        // Reply to sender first
+        // Tell the sender (ephemeral)
         await interaction.editReply({ embeds: [mutualEmbed] });
 
-        // DM target async — fire and forget, won't block
-        target.send({
+        // Post publicly in the channel
+        await interaction.followUp({ embeds: [mutualEmbed], ephemeral: false });
+
+        // Notify target in-server (ephemeral — only they can see it)
+        await interaction.followUp({
+            content: `<@${target.id}>`,
             embeds: [new EmbedBuilder()
                 .setColor(getMoodColor(mood))
                 .setTitle('💞 A Mutual Confession')
-                .setDescription(`<@${sender}> confessed to you — and you had already confessed to them. The moon revealed the secret.`)
-                .setFooter({ text: '🌙 Moon Consort' })]
-        }).catch(() => {});
-
-        // Also announce publicly
-        await interaction.followUp({
-            embeds: [mutualEmbed],
+                .setDescription(`<@${sender}> confessed to you — and you had already confessed to them.\n\nThe moon has revealed the secret. Bond +10.`)
+                .setFooter({ text: getMoodFooter(mood) })],
             ephemeral: false,
         });
 
         return;
     }
 
-    // Not mutual — DM target async
-    target.send({
+    // Not mutual yet — notify target with an ephemeral ping in this channel
+    await interaction.followUp({
+        content: `<@${target.id}>`,
         embeds: [new EmbedBuilder()
             .setColor(getMoodColor(mood))
             .setTitle('💌 A Sealed Confession')
-            .setDescription(`Someone in **${interaction.guild.name}** has confessed something to you.\n\nThe moon will not say who. If you feel the same for someone — use \`/confess\` and let fate decide.\n\n*If you confess to the same person, the moon will reveal you both.*`)
-            .setFooter({ text: getMoodFooter(mood) })]
-    }).catch(() => {});
+            .setDescription(`Someone has confessed something to you.\n\nThe moon will not say who.\n\n*Use \`/confess\` on someone you feel something for — if it's mutual, the moon will reveal you both.*`)
+            .setFooter({ text: getMoodFooter(mood) })],
+        ephemeral: false,
+    });
 
+    // Confirm to sender
     await interaction.editReply({
         embeds: [buildEmbed('affection',
             '💌 Your confession has been sealed and carried by moonlight. The moon will keep your secret — until the stars decide otherwise.',

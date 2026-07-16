@@ -1,6 +1,5 @@
 import pool from '../database/index.js';
 import { addButterfly } from '../database/queries/butterflies.js';
-import { incrementField } from '../database/queries/users.js';
 
 export async function ensureFestivalTable() {
     await pool.query(`
@@ -20,19 +19,15 @@ export async function ensureFestivalTable() {
     `);
 }
 
-// Returns true if today is within 1 day of a full moon
-// Uses the known full moon cycle (29.53059 days) anchored to a known full moon
 export function isFullMoon() {
     const KNOWN_FULL_MOON = new Date('2000-01-06T18:14:00Z').getTime();
     const LUNAR_CYCLE_MS = 29.53059 * 24 * 60 * 60 * 1000;
     const now = Date.now();
     const phase = ((now - KNOWN_FULL_MOON) % LUNAR_CYCLE_MS + LUNAR_CYCLE_MS) % LUNAR_CYCLE_MS;
     const phaseDay = phase / (24 * 60 * 60 * 1000);
-    // Full moon is at day ~14.765; within 1 day counts
     return Math.abs(phaseDay - 14.765) < 1.0;
 }
 
-// Check if festival already ran today for this guild
 export async function festivalRanToday(guildId) {
     const today = new Date().toISOString().slice(0, 10);
     const res = await pool.query(
@@ -50,26 +45,28 @@ export async function markFestivalRan(guildId) {
     );
 }
 
-// Give rewards to all active users in the guild (active = interacted in last 30 days)
 export async function distributeFestivalRewards(guildId) {
-    const res = await pool.query(
-        `SELECT DISTINCT user_id FROM bonds
-         WHERE (user1_id IS NOT NULL OR user2_id IS NOT NULL) AND guild_id=$1`,
-        [guildId]
-    );
-
-    // Fallback: get all users in this guild
     const usersRes = await pool.query(
         'SELECT user_id FROM users WHERE guild_id=$1',
         [guildId]
     );
-
     const users = usersRes.rows.map(r => r.user_id);
 
     for (const userId of users) {
+        // 2 white butterflies
         await addButterfly(userId, guildId, 'white');
         await addButterfly(userId, guildId, 'white');
-        await incrementField(userId, guildId, 'blessings');
+
+        // 1 blessing — insert into blessings table (matches your schema)
+        await pool.query(
+            `INSERT INTO blessings (user_id, guild_id, blessings_received)
+             VALUES ($1, $2, 1)
+             ON CONFLICT (user_id, guild_id)
+             DO UPDATE SET blessings_received = blessings.blessings_received + 1`,
+            [userId, guildId]
+        );
+
+        // 1 moon fragment
         await addMoonFragment(userId, guildId);
     }
 

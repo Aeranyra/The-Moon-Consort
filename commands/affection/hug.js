@@ -1,11 +1,13 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { ensureUser } from '../../database/queries/users.js';
+import { replies } from '../../utils/replies.js';
+import { pick } from '../../utils/helpers.js';
 import { buildEmbed } from '../../utils/embeds.js';
 import { buildYesNoRow } from '../../utils/buttons.js';
 
 export const data = new SlashCommandBuilder()
     .setName('hug')
-    .setDescription('Hug someone.')
+    .setDescription('hug someone.')
     .addUserOption(o => o.setName('user').setDescription('Target user').setRequired(true));
 
 export async function execute(interaction) {
@@ -13,7 +15,10 @@ export async function execute(interaction) {
     const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    if (target.id === sender) return interaction.reply({ embeds: [buildEmbed('affection', '🌙 You cannot do this to yourself.')], ephemeral: true });
+    if (target.id === sender) return interaction.reply({
+        embeds: [buildEmbed('affection', '🌙 You cannot do this to yourself.')],
+        ephemeral: true,
+    });
 
     await ensureUser(sender, guildId);
     await ensureUser(target.id, guildId);

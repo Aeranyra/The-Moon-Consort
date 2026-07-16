@@ -4,6 +4,7 @@ import { updateBond } from '../../database/queries/bonds.js';
 import { incrementField } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
+import { buildEmbed } from '../../utils/embeds.js';
 
 export const data = new SlashCommandBuilder()
     .setName('divorce')
@@ -16,17 +17,12 @@ export async function execute(interaction) {
     const guildId = interaction.guildId;
 
     const marriages = await getMarriages(sender, guildId);
-    const isMarried = marriages.find(m =>
-        (m.user1_id === sender && m.user2_id === target) ||
-        (m.user1_id === target && m.user2_id === sender)
-    );
-
-    if (!isMarried) return interaction.reply({ content: '🌙 You are not married to this person.', ephemeral: true });
+    const isMarried = marriages.find(m => (m.user1_id === sender && m.user2_id === target) || (m.user1_id === target && m.user2_id === sender));
+    if (!isMarried) return interaction.reply({ embeds: [buildEmbed('relationships', '🌙 You are not married to this person.')], ephemeral: true });
 
     await deleteMarriage(sender, target, guildId);
     await updateBond(sender, target, guildId, -25);
     await incrementField(sender, guildId, 'divorce_count');
     await incrementField(target, guildId, 'divorce_count');
-
-    await interaction.reply({ content: pick(replies.divorce.success)(sender, target) });
+    await interaction.reply({ embeds: [buildEmbed('relationships', pick(replies.divorce.success)(sender, target))] });
 }

@@ -4,6 +4,7 @@ import { getMarriages, getProposal, createProposal } from '../../database/querie
 import { ensureUser } from '../../database/queries/users.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
+import { buildEmbed } from '../../utils/embeds.js';
 import { MAX_MARRIAGES } from '../../utils/constants.js';
 
 export const data = new SlashCommandBuilder()
@@ -16,24 +17,20 @@ export async function execute(interaction) {
     const target = interaction.options.getUser('user').id;
     const guildId = interaction.guildId;
 
-    if (sender === target) return interaction.reply({ content: '🌙 You cannot propose to yourself.', ephemeral: true });
+    if (sender === target) return interaction.reply({ embeds: [buildEmbed('relationships', '🌙 You cannot propose to yourself.')], ephemeral: true });
 
     await ensureUser(sender, guildId);
     await ensureUser(target, guildId);
 
     const score = await getBond(sender, target, guildId);
-    if (score < 31) {
-        return interaction.reply({ content: pick(replies.propose.failure)(sender), ephemeral: true });
-    }
+    if (score < 31) return interaction.reply({ embeds: [buildEmbed('relationships', pick(replies.propose.failure)(sender))], ephemeral: true });
 
     const count = await getMarriages(sender, guildId);
-    if (count.length >= MAX_MARRIAGES) {
-        return interaction.reply({ content: `🌙 You have reached the maximum of ${MAX_MARRIAGES} marriages.`, ephemeral: true });
-    }
+    if (count.length >= MAX_MARRIAGES) return interaction.reply({ embeds: [buildEmbed('relationships', `🌙 You have reached the maximum of ${MAX_MARRIAGES} marriages.`)], ephemeral: true });
 
     const existing = await getProposal(sender, target, guildId);
-    if (existing) return interaction.reply({ content: '💌 You already have a pending proposal to this person.', ephemeral: true });
+    if (existing) return interaction.reply({ embeds: [buildEmbed('relationships', '💌 You already have a pending proposal to this person.')], ephemeral: true });
 
     await createProposal(sender, target, guildId);
-    await interaction.reply({ content: pick(replies.propose.success)(sender, target) });
+    await interaction.reply({ embeds: [buildEmbed('relationships', pick(replies.propose.success)(sender, target))] });
 }

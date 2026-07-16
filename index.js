@@ -9,6 +9,7 @@ import { ensureFortuneTable } from './database/queries/fortune.js';
 import { ensureConfessionTable } from './database/queries/confessions.js';
 import { ensureLoreTable } from './database/queries/lore.js';
 import { ensureMoodTable } from './utils/mood.js';
+import { ensureDailyTable } from './database/queries/daily.js';
 import { ensureFestivalTable, isFullMoon, festivalRanToday, markFestivalRan, distributeFestivalRewards } from './utils/festival.js';
 dotenv.config();
 
@@ -37,6 +38,7 @@ client.once('ready', async () => {
     await ensureConfessionTable();
     await ensureLoreTable();
     await ensureMoodTable();
+    await ensureDailyTable();
     await ensureFestivalTable();
 
     await registerCommands(client);

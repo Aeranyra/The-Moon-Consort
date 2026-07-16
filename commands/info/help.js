@@ -1,66 +1,105 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { getDailyMood, getMoodColor, getMoodFooter } from '../../utils/mood.js';
 
 const CATEGORIES = [
     {
         name: '💞 Affection',
         commands: [
-            ['comfort', 'Comfort someone.'],
-            ['cuddle', 'Cuddle someone. Needs Friend bond (11+).'],
-            ['hug', 'Hug someone.'],
-            ['kiss', 'Kiss someone. Needs Friend bond (11+).'],
-            ['pat', 'Pat someone.'],
-            ['snuggle', 'Snuggle someone. Needs Friend bond (11+).'],
-            ['tease', 'Tease someone. Needs Friend bond (11+).'],
+            ['comfort',     'Comfort someone.'],
+            ['cuddle',      'Cuddle someone. Needs Friend bond (11+).'],
+            ['drink share', 'Share a moonlit drink with someone.'],
+            ['drink force', 'Force a drink on someone. Needs Close bond (31+).'],
+            ['eat share',   'Share a meal with someone.'],
+            ['eat force',   'Force-feed someone. Needs Close bond (31+).'],
+            ['hug',         'Hug someone.'],
+            ['kiss',        'Kiss someone. Needs Friend bond (11+).'],
+            ['pat',         'Pat someone.'],
+            ['snuggle',     'Snuggle someone. Needs Friend bond (11+).'],
+            ['tease',       'Tease someone. Needs Friend bond (11+).'],
         ],
     },
     {
         name: '😈 Chaos',
         commands: [
-            ['challenge', 'Start a staring contest. Needs Cherished bond (61+). First to /yield loses.'],
-            ['haunt', 'Haunt someone from the shadows. Needs Friend bond (11+).'],
-            ['ignore', 'Ignore someone coldly. Needs Friend bond (11+). Lowers bond.'],
-            ['poke', 'Poke someone.'],
-            ['slap', 'Slap someone. Needs Close bond (31+). Lowers bond.'],
-            ['stalk', "Reveal someone's last interaction partner. Needs Cherished bond (61+)."],
-            ['steal', 'Attempt to steal a butterfly. Needs Cherished bond (61+). Risky — can fail.'],
-            ['step', 'Step on someone. Needs Close bond (31+). Lowers bond.'],
+            ['banish',    'Banish someone to the Shadow Realm. Needs Close bond (31+).'],
+            ['bonk',      'Bonk someone. Needs Close bond (31+).'],
+            ['challenge', 'Start a staring contest. Needs Cherished bond (61+).'],
+            ['choke',     'Dramatically choke someone. Needs Close bond (31+).'],
+            ['haunt',     'Haunt someone. Needs Friend bond (11+).'],
+            ['ignore',    'Ignore someone coldly. Needs Friend bond (11+). Lowers bond.'],
+            ['poke',      'Poke someone. Always available.'],
+            ['punish',    'Sentence someone to the Corner of Shame. Needs Close bond (31+).'],
+            ['slap',      'Slap someone. Needs Close bond (31+). Lowers bond.'],
+            ['spank',     'Spank someone. Needs Close bond (31+).'],
+            ['stalk',     'Dig up intel on someone. Needs Friend bond (11+).'],
+            ['steal',     'Steal a butterfly. Needs Cherished bond (61+). Risky.'],
+            ['step',      'Step on someone. Needs Close bond (31+). Lowers bond.'],
+            ['yeet',      'Yeet someone into the void. Needs Close bond (31+).'],
         ],
     },
     {
         name: '👨‍👩‍👦 Family',
         commands: [
-            ['adopt', 'Adopt someone as your child. Needs Cherished bond (61+).'],
-            ['family', 'View your family tree — spouses, parents, children.'],
+            ['adopt',  'Adopt someone as your child. Needs Cherished bond (61+).'],
+            ['family', 'View your family tree.'],
+        ],
+    },
+    {
+        name: '🎭 Fun',
+        commands: [
+            ['8ball',   'Ask the moon a yes-or-no question.'],
+            ['confess', 'Send an anonymous confession. Revealed only if both confess to each other.'],
+            ['fortune', 'Daily moon fortune. May reward a butterfly or blessing.'],
+            ['roast',   'Roast someone lovingly.'],
+            ['ship',    'Calculate compatibility between two people.'],
         ],
     },
     {
         name: '📜 Info',
         commands: [
-            ['bond', 'Check your bond level with someone.'],
+            ['bond',        'Check your bond level with someone.'],
             ['butterflies', 'View your butterfly collection.'],
-            ['fortune', 'Receive your daily moon fortune.'],
-            ['memories', 'View your moon memories — milestones like first kiss or marriage.'],
-            ['profile', 'View your full Moon Consort profile.'],
-            ['reputation', 'Check your current reputation title.'],
-            ['vow', 'Write or view your personal vow.'],
+            ['lore',        'Read the lore book. 22 entries unlock as bonds deepen.'],
+            ['memories',    'View your moon memories.'],
+            ['mood',        'Check the Moon Consort mood today.'],
+            ['profile',     'View your profile. Optional: @user to view others.'],
+            ['reputation',  'Check your reputation title.'],
+            ['vow',         'Write or view your personal vow.'],
         ],
     },
     {
         name: '💍 Relationships',
         commands: [
-            ['accept', 'Accept a pending marriage proposal.'],
-            ['decline', 'Decline a pending marriage proposal.'],
-            ['divorce', 'End a marriage. Lowers bond by 25.'],
+            ['accept',    'Accept a pending marriage proposal.'],
+            ['decline',   'Decline a pending proposal.'],
+            ['divorce',   'End a marriage. Lowers bond by 25.'],
             ['marriages', 'View your current marriages.'],
-            ['propose', 'Send a marriage proposal. Needs Close bond (31+). Max 10 marriages.'],
+            ['propose',   'Send a proposal. Needs Close bond (31+). Max 10 marriages.'],
         ],
     },
     {
         name: '🎁 Social',
         commands: [
-            ['bless', 'Bestow a moonlight blessing. Needs Close bond (31+). 24h cooldown.'],
-            ['butterfly', 'Send a butterfly from your collection. Needs Close bond (31+).'],
-            ['gift', 'Give someone a random gift.'],
+            ['bless',     'Bestow a blessing. Needs Close bond (31+). 24h cooldown.'],
+            ['butterfly', 'Send a butterfly. Needs Close bond (31+).'],
+            ['gift',      'Give someone a random gift.'],
+        ],
+    },
+    {
+        name: '🐾 Pets',
+        commands: [
+            ['pet adopt', 'Adopt a random moonlit pet.'],
+            ['pet feed',  'Feed your pet. 1h cooldown.'],
+            ['pet play',  'Play with your pet. May find a butterfly. 2h cooldown.'],
+            ['pet view',  'View your pet stats.'],
+        ],
+    },
+    {
+        name: '💌 Letters',
+        commands: [
+            ['letter send',  'Send an anonymous sealed letter.'],
+            ['letter inbox', 'Read your unread letters.'],
+            ['letter burn',  'Destroy a letter forever.'],
         ],
     },
 ];
@@ -75,10 +114,10 @@ const BOND_LEVELS_TEXT = [
 ].join('\n');
 
 const REPUTATION_TEXT = [
-    '🌸 **Faithful Soul** — the default, everyone starts here',
-    '🌙 **Moon Favorite** — earned through favor with the moon',
-    '💞 **Beloved Companion** — reach a highest bond of 150+',
-    '🎁 **Generous Spirit** — give 10+ blessings',
+    '🌸 **Faithful Soul** — everyone starts here',
+    '🌙 **Moon Favorite** — earned through moon favor',
+    '💞 **Beloved Companion** — highest bond 150+',
+    '🎁 **Generous Spirit** — 10+ blessings given',
     '😈 **Heartbreaker** — 2+ divorces',
     '💔 **Serial Divorcee** — 5+ divorces',
 ].join('\n');
@@ -88,26 +127,42 @@ export const data = new SlashCommandBuilder()
     .setDescription('Learn how Moon Consort works and view all commands.');
 
 export async function execute(interaction) {
+    const guildId = interaction.guildId;
+    const mood = await getDailyMood(guildId);
+    const color = getMoodColor(mood);
+    const footer = getMoodFooter(mood);
+
     const introEmbed = new EmbedBuilder()
-        .setColor(0x9b8cff)
+        .setColor(color)
         .setTitle('🌙 How Moon Consort Works')
         .setDescription(
             'Moon Consort is a relationship roleplay bot. Interact with others to build a **bond score** — ' +
-            'the higher it climbs, the more commands unlock between you two. Some actions raise your bond, ' +
-            'some lower it, and a few (like `/slap` or `/steal`) are pure chaos with real risk.'
+            'the higher it climbs, the more commands unlock.\n\n' +
+            '💞 **Affection commands** show Accept/Decline buttons — the target must respond first.\n' +
+            '😈 **Chaos commands** are instant — 15% chance to backfire on the sender.\n' +
+            '🌕 **Full Moon Festival** auto-triggers on real full moon dates for everyone.'
         )
         .addFields(
             { name: '💞 Bond Levels', value: BOND_LEVELS_TEXT, inline: true },
             {
                 name: '🦋 Butterflies',
-                value: 'Collect 5 kinds — ⚪ White, 🩷 Pink, ⚫ Black, 🩶 Silver, 🟡 Gold — by chance through ' +
-                       'interactions, or send/steal them with others.',
+                value: '5 tiers: ⚪ White → 🩷 Pink → ⚫ Black → 🩶 Silver → 🟡 Gold.\n' +
+                       'Earn through interactions, `/fortune`, `/pet play`, or Full Moon Festival.',
                 inline: true,
             },
             {
-                name: '💍 Marriages & Family',
-                value: '`/propose` to marry someone (needs Close bond, max 10 spouses at once). ' +
-                       '`/adopt` to bring someone into your family as a child.',
+                name: '🌙 Mood System',
+                value: '8 daily moods — each changes the embed color and footer. Check with `/mood`.',
+                inline: false,
+            },
+            {
+                name: '📚 Lore Book',
+                value: '22 moon stories that unlock based on your bond score + actions. Use `/lore`.',
+                inline: false,
+            },
+            {
+                name: '💌 Confessions & Letters',
+                value: '`/confess` sends an anonymous confession — revealed only if both confess to each other.\n`/letter send` sends an anonymous sealed letter.',
                 inline: false,
             },
             {
@@ -115,24 +170,15 @@ export async function execute(interaction) {
                 value: REPUTATION_TEXT,
                 inline: false,
             },
-            {
-                name: '📜 Memories & Vows',
-                value: 'The moon remembers milestones — first kiss, first marriage, first child, first ' +
-                       'blessing, and your highest ever bond. Write a personal `/vow` that shows on your profile.',
-                inline: false,
-            },
-            {
-                name: '✨ Random Events',
-                value: 'A small chance triggers on affectionate actions — extra surprises from the moon itself.',
-                inline: false,
-            }
         )
-        .setFooter({ text: 'Full command list below 👇' });
+        .setFooter({ text: `${footer} • Command list below 👇` });
+
+    const totalCmds = CATEGORIES.reduce((n, c) => n + c.commands.length, 0);
 
     const commandsEmbed = new EmbedBuilder()
-        .setColor(0x9b8cff)
-        .setTitle('🌙 Moon Consort — Commands')
-        .setFooter({ text: `${CATEGORIES.reduce((n, c) => n + c.commands.length, 0)} commands total` });
+        .setColor(color)
+        .setTitle('🌙 Moon Consort — All Commands')
+        .setFooter({ text: `${totalCmds} commands total • ${footer}` });
 
     for (const category of CATEGORIES) {
         const lines = category.commands

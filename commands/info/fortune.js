@@ -1,7 +1,8 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
-import { ensureUser, incrementField } from '../../database/queries/users.js';
+import { ensureUser } from '../../database/queries/users.js';
 import { addButterfly } from '../../database/queries/butterflies.js';
 import { getLastFortune, useFortune } from '../../database/queries/fortune.js';
+import pool from '../../database/index.js';
 import { replies } from '../../utils/replies.js';
 import { pick } from '../../utils/helpers.js';
 import { getDailyMood, getMoodColor, getMoodFooter } from '../../utils/mood.js';
@@ -24,7 +25,10 @@ export async function execute(interaction) {
             const hours = Math.ceil(remaining / (60 * 60 * 1000));
             const mood = await getDailyMood(guildId);
             return interaction.reply({
-                embeds: [new EmbedBuilder().setColor(getMoodColor(mood)).setDescription(`🌙 *The moon has already spoken to you today. Return in ~${hours}h.*`).setFooter({ text: getMoodFooter(mood) })],
+                embeds: [new EmbedBuilder()
+                    .setColor(getMoodColor(mood))
+                    .setDescription(`🌙 *The moon has already spoken to you today. Return in ~${hours}h.*`)
+                    .setFooter({ text: getMoodFooter(mood) })],
                 ephemeral: true,
             });
         }
@@ -36,7 +40,14 @@ export async function execute(interaction) {
 
     let text, title;
     if (roll < 0.10) {
-        await incrementField(userId, guildId, 'blessings');
+        // Blessing — goes to blessings table (matches your schema)
+        await pool.query(
+            `INSERT INTO blessings (user_id, guild_id, blessings_received)
+             VALUES ($1, $2, 1)
+             ON CONFLICT (user_id, guild_id)
+             DO UPDATE SET blessings_received = blessings.blessings_received + 1`,
+            [userId, guildId]
+        );
         text = pick(replies.fortune.blessing)(userId);
         title = '🌸 A Blessing';
     } else if (roll < 0.30) {
@@ -49,6 +60,10 @@ export async function execute(interaction) {
     }
 
     await interaction.reply({
-        embeds: [new EmbedBuilder().setColor(getMoodColor(mood)).setTitle(title).setDescription(text).setFooter({ text: getMoodFooter(mood) })],
+        embeds: [new EmbedBuilder()
+            .setColor(getMoodColor(mood))
+            .setTitle(title)
+            .setDescription(text)
+            .setFooter({ text: getMoodFooter(mood) })],
     });
 }

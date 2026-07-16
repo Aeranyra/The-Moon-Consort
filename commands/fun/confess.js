@@ -2,6 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { ensureUser, updateHighestBond } from '../../database/queries/users.js';
 import { updateBond } from '../../database/queries/bonds.js';
 import { hasConfessed, createConfession, checkMutual, markRevealed } from '../../database/queries/confessions.js';
+import { createLetter } from '../../database/queries/letters.js';
 import { buildEmbed } from '../../utils/embeds.js';
 import { getDailyMood, getMoodColor, getMoodFooter } from '../../utils/mood.js';
 
@@ -41,49 +42,42 @@ export async function execute(interaction) {
     const mood = await getDailyMood(guildId);
 
     if (mutual) {
+        // Both confessed — reveal to both via letter inbox
         await markRevealed(sender, target.id, guildId);
         const newScore = await updateBond(sender, target.id, guildId, 10);
         await updateHighestBond(sender, guildId, newScore);
         await updateHighestBond(target.id, guildId, newScore);
 
-        const mutualEmbed = new EmbedBuilder()
-            .setColor(getMoodColor(mood))
-            .setTitle('💞 A Mutual Confession')
-            .setDescription(`The moon has kept both your secrets long enough.\n\n<@${sender}> and <@${target.id}> have confessed to each other.\n\n✨ Bond +10`)
-            .setFooter({ text: getMoodFooter(mood) });
+        // Send each a letter revealing the other
+        await createLetter(
+            'MOON_CONSORT', target.id, guildId,
+            `💞 The moon has been keeping a secret. <@${sender}> confessed to you — and you confessed to them. It was mutual all along. Bond +10.`
+        );
+        await createLetter(
+            'MOON_CONSORT', sender, guildId,
+            `💞 The moon has been keeping a secret. <@${target.id}> also confessed to you. It was mutual all along. Bond +10.`
+        );
 
-        // Tell sender privately
-        await interaction.editReply({ embeds: [mutualEmbed] });
-
-        // Tell target privately — ephemeral followUp tags them so only they see it
-        await interaction.followUp({
-            content: `<@${target.id}>`,
+        await interaction.editReply({
             embeds: [new EmbedBuilder()
                 .setColor(getMoodColor(mood))
                 .setTitle('💞 A Mutual Confession')
-                .setDescription(`<@${sender}> confessed to you — and you had already confessed to them.\n\nThe moon has revealed the secret. Bond +10.`)
+                .setDescription(`The moon has kept both your secrets long enough.\n\n<@${target.id}> also confessed to you.\n\nYou'll both find the full reveal in your \`/letter inbox\`.\n\n✨ Bond +10`)
                 .setFooter({ text: getMoodFooter(mood) })],
-            ephemeral: true,
         });
 
         return;
     }
 
-    // Not mutual — notify target privately only
-    await interaction.followUp({
-        content: `<@${target.id}>`,
-        embeds: [new EmbedBuilder()
-            .setColor(getMoodColor(mood))
-            .setTitle('💌 A Sealed Confession')
-            .setDescription(`Someone has confessed something to you.\n\nThe moon will not say who.\n\n*Use \`/confess\` on someone you feel something for — if it's mutual, the moon will reveal you both.*`)
-            .setFooter({ text: getMoodFooter(mood) })],
-        ephemeral: true,
-    });
+    // Not mutual yet — drop an anonymous letter in the target's inbox
+    await createLetter(
+        'MOON_CONSORT', target.id, guildId,
+        `💌 Someone has a confession for you. The moon will not say who.\n\nIf you feel something for someone, use \`/confess\` — if it's mutual, the moon will reveal you both.`
+    );
 
-    // Confirm to sender privately
     await interaction.editReply({
         embeds: [buildEmbed('affection',
-            '💌 Your confession has been sealed and carried by moonlight. The moon will keep your secret — until the stars decide otherwise.',
+            `💌 Your confession has been sealed and placed in <@${target.id}>'s \`/letter inbox\`. They'll find it when they check.\n\nThe moon will keep your secret — until the stars decide otherwise.`,
             { title: '💌 Confession Sent' }
         )],
     });

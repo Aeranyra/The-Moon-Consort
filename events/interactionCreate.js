@@ -17,6 +17,8 @@ const BUTTON_COMMANDS = {
     tease:       { threshold: 11, delta: 1,  category: 'affection', memory: null,         replyKey: ['tease', 'success'] },
     drink_share: { threshold: 0,  delta: 2,  category: 'affection', memory: null,         replyKey: ['drink', 'share', 'success'] },
     eat_share:   { threshold: 0,  delta: 2,  category: 'affection', memory: null,         replyKey: ['eat', 'share', 'success'] },
+    seduce:      { threshold: 0,  delta: 1,  category: 'fun',       memory: null,         replyKey: ['seduce', 'success'] },
+    sleep:       { threshold: 0,  delta: 1,  category: 'affection', memory: null,         replyKey: ['sleep', 'success'] },
 };
 
 function resolveReply(keyPath) {

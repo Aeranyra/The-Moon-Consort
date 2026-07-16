@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { ensureUser, updateHighestBond } from '../../database/queries/users.js';
 import { updateBond } from '../../database/queries/bonds.js';
 import { hasConfessed, createConfession, checkMutual, markRevealed } from '../../database/queries/confessions.js';
@@ -40,24 +40,22 @@ export async function execute(interaction) {
     const mood = await getDailyMood(guildId);
 
     if (mutual) {
-        // Both confessed — reveal to both
         await markRevealed(sender, target.id, guildId);
         const newScore = await updateBond(sender, target.id, guildId, 10);
         await updateHighestBond(sender, guildId, newScore);
         await updateHighestBond(target.id, guildId, newScore);
 
-        const embed = new (await import('discord.js')).EmbedBuilder()
+        const mutualEmbed = new EmbedBuilder()
             .setColor(getMoodColor(mood))
             .setTitle('💞 A Mutual Confession')
             .setDescription(`The moon has kept both your secrets long enough.\n\n<@${sender}> and <@${target.id}> have confessed to each other.\n\n✨ Bond +10`)
             .setFooter({ text: getMoodFooter(mood) });
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [mutualEmbed] });
 
-        // Also DM the target if possible
         try {
             await target.send({
-                embeds: [new (await import('discord.js')).EmbedBuilder()
+                embeds: [new EmbedBuilder()
                     .setColor(getMoodColor(mood))
                     .setTitle('💞 A Mutual Confession')
                     .setDescription(`<@${sender}> confessed to you — and you had already confessed to them. The moon revealed the secret.`)
@@ -68,10 +66,10 @@ export async function execute(interaction) {
         return;
     }
 
-    // Not mutual yet — notify target anonymously via DM
+    // Not mutual — DM target anonymously
     try {
         await target.send({
-            embeds: [new (await import('discord.js')).EmbedBuilder()
+            embeds: [new EmbedBuilder()
                 .setColor(getMoodColor(mood))
                 .setTitle('💌 A Sealed Confession')
                 .setDescription(`Someone in **${interaction.guild.name}** has confessed something to you.\n\nThe moon will not say who. If you feel the same for someone — use \`/confess\` and let fate decide.\n\n*If you confess to the same person, the moon will reveal you both.*`)

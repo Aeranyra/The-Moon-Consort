@@ -1,6 +1,7 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { getBond } from '../../database/queries/bonds.js';
 import { getBondLevel } from '../../utils/bondLevel.js';
+import { getDailyMood, getMoodColor, getMoodFooter } from '../../utils/mood.js';
 
 export const data = new SlashCommandBuilder()
     .setName('bond')
@@ -9,14 +10,22 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
     const sender = interaction.user.id;
-    const target = interaction.options.getUser('user').id;
+    const target = interaction.options.getUser('user');
     const guildId = interaction.guildId;
 
-    const score = await getBond(sender, target, guildId);
+    const score = await getBond(sender, target.id, guildId);
     const level = getBondLevel(score);
+    const mood = await getDailyMood(guildId);
+
+    const filled = Math.min(10, Math.floor(score / 10));
+    const bar = '💞'.repeat(filled) + '🖤'.repeat(10 - filled);
 
     await interaction.reply({
-        content: `💞 **Bond with <@${target}>**\nScore: ${score} — ${level.label}`,
-        ephemeral: true
+        embeds: [new EmbedBuilder()
+            .setColor(getMoodColor(mood))
+            .setTitle(`💞 Bond with ${target.username}`)
+            .setDescription(`${bar}\n\n**Score:** ${score} — ${level.label}`)
+            .setFooter({ text: getMoodFooter(mood) })],
+        ephemeral: true,
     });
 }

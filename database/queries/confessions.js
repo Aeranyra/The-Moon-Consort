@@ -53,3 +53,19 @@ export async function markRevealed(userA, userB, guildId) {
         [userA, userB, guildId]
     );
 }
+
+// Delete a specific confession (for admin reset)
+export async function deleteConfession(senderId, recipientId, guildId) {
+    await pool.query(
+        'DELETE FROM confessions WHERE sender_id=$1 AND recipient_id=$2 AND guild_id=$3',
+        [senderId, recipientId, guildId]
+    );
+}
+
+// Delete ALL confessions for a user in a guild (full reset)
+export async function resetConfessions(userId, guildId) {
+    await pool.query(
+        'DELETE FROM confessions WHERE (sender_id=$1 OR recipient_id=$1) AND guild_id=$2',
+        [userId, guildId]
+    );
+}

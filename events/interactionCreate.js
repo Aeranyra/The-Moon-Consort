@@ -1,15 +1,11 @@
 import { parseButtonId } from '../utils/buttons.js';
 import { buildEmbed } from '../utils/embeds.js';
-import { fetchGif, GIF_TERMS } from '../utils/gif.js';
 import { replies } from '../utils/replies.js';
 import { pick } from '../utils/helpers.js';
 import { getBond, updateBond } from '../database/queries/bonds.js';
 import { ensureUser, updateHighestBond, incrementField } from '../database/queries/users.js';
 import { addMemory } from '../database/queries/memories.js';
 import { rollRandomEvent, getRandomEventMessage } from '../utils/randomEvent.js';
-import { randomWeapon } from '../utils/weapons.js';
-import { rollBackfire } from '../utils/chaos.js';
-import { stealButterfly } from '../database/queries/butterflies.js';
 
 const BUTTON_COMMANDS = {
     kiss:        { threshold: 11, delta: 3,  category: 'affection', memory: 'first_kiss', replyKey: ['kiss', 'success'] },
@@ -76,39 +72,43 @@ export async function handleInteraction(interaction) {
 
         // ── Accept ───────────────────────────────────────────
         try {
-            // Step 1: deferUpdate IMMEDIATELY — must happen within 3 seconds
+            // Defer immediately — must happen within 3 seconds
             await interaction.deferUpdate();
 
-            // Step 2: do all database work while GIF fetches in parallel
+            // Build reply text
             const replyArr = resolveReply(cmd.replyKey);
-            const text = replyArr ? pick(replyArr)(senderId, targetId) : `💞 <@${senderId}> and <@${targetId}>.`;
+            const text = replyArr
+                ? pick(replyArr)(senderId, targetId)
+                : `💞 <@${senderId}> and <@${targetId}>.`;
 
+            // Random event flavor
             const event = rollRandomEvent();
-            const eventMsg = event ? '\n\n' + (getRandomEventMessage(event, senderId) ?? '') : '';
+            const eventMsg = event
+                ? '\n\n' + (getRandomEventMessage(event, senderId) ?? '')
+                : '';
 
-            // Run DB updates and GIF fetch in parallel
-            const [gifUrl] = await Promise.all([
-                fetchGif(GIF_TERMS[prefix] ?? GIF_TERMS[prefix.split('_')[0]] ?? prefix),
-                (async () => {
-                    if (cmd.delta) {
-                        const newScore = await updateBond(senderId, targetId, guildId, cmd.delta);
-                        await updateHighestBond(senderId, guildId, newScore);
-                        await updateHighestBond(targetId, guildId, newScore);
-                    }
-                    if (cmd.memory) await addMemory(senderId, guildId, cmd.memory, targetId);
-                })(),
-            ]);
+            // DB updates
+            if (cmd.delta) {
+                const newScore = await updateBond(senderId, targetId, guildId, cmd.delta);
+                await updateHighestBond(senderId, guildId, newScore);
+                await updateHighestBond(targetId, guildId, newScore);
+            }
+            if (cmd.memory) {
+                await addMemory(senderId, guildId, cmd.memory, targetId);
+            }
 
-            // Step 3: edit the reply with result + GIF
             await interaction.editReply({
-                embeds: [buildEmbed(cmd.category, text + eventMsg, gifUrl ? { image: gifUrl } : {})],
+                embeds: [buildEmbed(cmd.category, text + eventMsg)],
                 components: [],
             });
 
         } catch (err) {
             console.error(`Button handler error [${prefix}]:`, err);
             try {
-                await interaction.editReply({ content: '🌙 The moon encountered an error.', components: [] });
+                await interaction.editReply({
+                    content: '🌙 The moon encountered an error.',
+                    components: [],
+                });
             } catch {}
         }
     }

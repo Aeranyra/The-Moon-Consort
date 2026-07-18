@@ -802,4 +802,62 @@ export const replies = {
         ],
     },
 
+    // ── TRUTH OR DARE ──────────────────────────────────────
+    tod: {
+        truths: [
+            (t) => `🌙 <@${t}>, what's something you've never admitted in this server?`,
+            (t) => `✨ <@${t}>, who here do you think about most? You don't have to say why.`,
+            (t) => `🌙 <@${t}>, what's the most unhinged thing you've done for someone you liked?`,
+            (t) => `💞 <@${t}>, have you ever had feelings for someone in this server? Don't name names. Just: yes or no.`,
+            (t) => `😈 <@${t}>, what's a lie you've told that you never corrected?`,
+            (t) => `🌙 <@${t}>, what's something you wish someone here would say to you?`,
+            (t) => `✨ <@${t}>, describe your type in three words. No elaboration.`,
+            (t) => `🌙 <@${t}>, what's the most embarrassing thing you've done online?`,
+            (t) => `💞 <@${t}>, have you ever sent a message and immediately regretted it? What was the vibe?`,
+            (t) => `😈 <@${t}>, what's something you pretend not to care about but actually care about deeply?`,
+            (t) => `🌙 <@${t}>, who in this server would you trust with a secret?`,
+            (t) => `✨ <@${t}>, what's your most irrational fear? The moon demands honesty.`,
+            (t) => `🌙 <@${t}>, what's something you find attractive that you've never told anyone?`,
+            (t) => `💞 <@${t}>, if you could tell someone here something anonymously, what would it be?`,
+            (t) => `😈 <@${t}>, what's the pettiest thing you've ever done and felt zero guilt about?`,
+            (t) => `🌙 <@${t}>, what's a version of yourself you've left behind that you kind of miss?`,
+            (t) => `✨ <@${t}>, what's the last thing that made you genuinely emotional?`,
+            (t) => `🌙 <@${t}>, if someone here could read your mind right now, who would that be the most awkward for?`,
+            (t) => `💞 <@${t}>, what do you think people misunderstand about you?`,
+            (t) => `😈 <@${t}>, what's a thought you had recently that surprised even you?`,
+            (t) => `🌙 <@${t}>, is there something unsaid between you and someone in this server right now?`,
+            (t) => `✨ <@${t}>, what's something small someone did that you'll never forget?`,
+        ],
+    },
+
+    // ── TRUTH OR DARE ──────────────────────────────────────
+    tod: {
+        truths: [
+            (t) => `🌙 <@${t}>, what is something you have never told anyone in this server?`,
+            (t) => `✨ <@${t}>, what is the most embarrassing thing you have done for someone you liked?`,
+            (t) => `🌙 <@${t}>, who in this server do you think about the most and why?`,
+            (t) => `✨ <@${t}>, what is a habit you have that you hope no one has noticed?`,
+            (t) => `🌙 <@${t}>, what is the last lie you told and who was it to?`,
+            (t) => `✨ <@${t}>, if you had to describe your current situation as a weather forecast, what would it be?`,
+            (t) => `🌙 <@${t}>, what is something you pretend to like but actually cannot stand?`,
+            (t) => `✨ <@${t}>, what is your most irrational fear that you have never admitted out loud?`,
+            (t) => `🌙 <@${t}>, who was your first real crush and what happened?`,
+            (t) => `✨ <@${t}>, what is the most dramatic thing you have done when you were upset?`,
+            (t) => `🌙 <@${t}>, what is something about yourself that took you a long time to accept?`,
+            (t) => `✨ <@${t}>, if the Moon Consort could reveal one of your secrets right now, what would you be most afraid of?`,
+            (t) => `🌙 <@${t}>, what is the most childish thing you still do?`,
+            (t) => `✨ <@${t}>, who in your life have you hurt and never properly apologized to?`,
+            (t) => `🌙 <@${t}>, what is something you want but are too proud to ask for?`,
+            (t) => `✨ <@${t}>, what is your most toxic trait and do you think you are working on it?`,
+            (t) => `🌙 <@${t}>, what is a version of yourself you left behind that you still miss?`,
+            (t) => `✨ <@${t}>, what is one thing someone said to you that you still think about?`,
+            (t) => `🌙 <@${t}>, what is your love language and do you think the people close to you know it?`,
+            (t) => `✨ <@${t}>, if you could send an anonymous message to anyone in this server right now, what would it say?`,
+            (t) => `🌙 <@${t}>, what is a belief you used to hold that you are now embarrassed by?`,
+            (t) => `✨ <@${t}>, when was the last time you cried and what was it about?`,
+            (t) => `🌙 <@${t}>, what is the most petty thing you have done and do you regret it?`,
+        ],
+    },
+
+
 };

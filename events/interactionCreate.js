@@ -5,7 +5,9 @@ import { pick } from '../utils/helpers.js';
 import { getBond, updateBond } from '../database/queries/bonds.js';
 import { ensureUser, updateHighestBond, incrementField } from '../database/queries/users.js';
 import { addMemory } from '../database/queries/memories.js';
+import { addButterfly } from '../database/queries/butterflies.js';
 import { rollRandomEvent, getRandomEventMessage } from '../utils/randomEvent.js';
+import { checkBondMilestones, awardMilestone } from '../utils/milestones.js';
 
 const BUTTON_COMMANDS = {
     kiss:        { threshold: 11, delta: 3,  category: 'affection', memory: 'first_kiss', replyKey: ['kiss', 'success'] },
@@ -74,33 +76,54 @@ export async function handleInteraction(interaction) {
 
         // ── Accept ───────────────────────────────────────────
         try {
-            // Defer immediately — must happen within 3 seconds
             await interaction.deferUpdate();
 
-            // Build reply text
             const replyArr = resolveReply(cmd.replyKey);
             const text = replyArr
                 ? pick(replyArr)(senderId, targetId)
                 : `💞 <@${senderId}> and <@${targetId}>.`;
 
-            // Random event flavor
+            // Random event — 30% chance of butterfly drop when event fires
             const event = rollRandomEvent();
-            const eventMsg = event
-                ? '\n\n' + (getRandomEventMessage(event, senderId) ?? '')
-                : '';
+            let eventMsg = '';
+            if (event) {
+                const baseMsg = getRandomEventMessage(event, senderId) ?? '';
+                eventMsg = '\n\n' + baseMsg;
+
+                // Actually drop a butterfly on butterfly events
+                if (event === 'butterfly_appears') {
+                    await addButterfly(senderId, guildId, 'white');
+                    eventMsg += '\n🦋 +1 white butterfly';
+                }
+            }
 
             // DB updates
+            let milestoneMsg = '';
             if (cmd.delta) {
                 const newScore = await updateBond(senderId, targetId, guildId, cmd.delta);
                 await updateHighestBond(senderId, guildId, newScore);
                 await updateHighestBond(targetId, guildId, newScore);
+
+                // Check bond milestones for both users
+                const senderMilestones = await checkBondMilestones(senderId, guildId, newScore);
+                const targetMilestones = await checkBondMilestones(targetId, guildId, newScore);
+                const allMilestones = [...senderMilestones, ...targetMilestones];
+                if (allMilestones.length) {
+                    milestoneMsg = '\n\n' + allMilestones.join('\n');
+                }
             }
-            if (cmd.memory) {
+
+            // First kiss milestone
+            if (cmd.memory === 'first_kiss') {
+                const got = await awardMilestone(senderId, guildId, 'first_kiss', 1);
+                if (got) milestoneMsg += '\n\n🦋 First kiss milestone! +1 butterfly';
+                await addMemory(senderId, guildId, cmd.memory, targetId);
+            } else if (cmd.memory) {
                 await addMemory(senderId, guildId, cmd.memory, targetId);
             }
 
             await interaction.editReply({
-                embeds: [buildEmbed(cmd.category, text + eventMsg)],
+                embeds: [buildEmbed(cmd.category, text + eventMsg + milestoneMsg)],
                 components: [],
             });
 

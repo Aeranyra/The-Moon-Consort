@@ -12,7 +12,6 @@ import { ensureMoodTable } from './utils/mood.js';
 import { ensureMilestoneTable } from './utils/milestones.js';
 import { ensureGatherTable } from './database/queries/gather.js';
 import { ensureDailyTable } from './database/queries/daily.js';
-import { ensureMilestonesTable } from './database/queries/milestones.js';
 import { ensureFestivalTable, isFullMoon, festivalRanToday, markFestivalRan, distributeFestivalRewards } from './utils/festival.js';
 dotenv.config();
 

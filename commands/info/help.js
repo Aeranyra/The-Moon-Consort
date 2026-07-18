@@ -68,7 +68,6 @@ const CATEGORIES = [
         name: '📜 Info',
         commands: [
             ['bond',        'Check your bond level with someone.'],
-            ['daily',       'Daily check-in. May reward a butterfly or blessing.'],
             ['daily',       'Daily check-in. May reward a butterfly or blessing. 24h cooldown.'],
             ['butterflies', 'View your butterfly collection.'],
             ['lore',        'Read the lore book. 22 entries unlock as bonds deepen.'],

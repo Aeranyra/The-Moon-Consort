@@ -43,7 +43,6 @@ client.once('ready', async () => {
     await ensureMilestoneTable();
     await ensureGatherTable();
     await ensureDailyTable();
-    await ensureMilestonesTable();
     await ensureFestivalTable();
 
     await registerCommands(client);
@@ -57,7 +56,6 @@ client.once('ready', async () => {
             const count = await distributeFestivalRewards(guild.id);
             await markFestivalRan(guild.id);
 
-            // Announce in first available text channel
             const channel = guild.channels.cache.find(
                 c => c.isTextBased() && c.permissionsFor(guild.members.me)?.has('SendMessages')
             );
